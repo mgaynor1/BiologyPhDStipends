@@ -1,5 +1,5 @@
 ---
-title: "Biology PhD Stipends 2022 \n "
+title: "Biology PhD Stipends \n "
 author: "Michelle L. Gaynor and Rhett M. Rautsaw"
 output: html_document
 runtime: shiny
