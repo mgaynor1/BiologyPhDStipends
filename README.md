@@ -21,6 +21,11 @@ I wanted to know how the US News National University Rankings ([compiled by Andr
 ![USRankingVSSalary](https://user-images.githubusercontent.com/29489651/205192147-fe1de5b5-c904-4a6c-8291-23ef8cfa8285.jpg)
 *Figure 1. Salary to Living Wage Ratio for Biology PhD assistantships compared to the 2023 US News National University Rankings. Shape of the points indicate if the University is public (circle) or private (triangle). The star indicates the Department of Biology at the University of Florida. This data was sampled on 11/30/2022.*
 
+## Full-time Doctoral Students Race Pie's for Salary/Living Wage
+NSF conducts a Survey of Graduate Students and Postdoctorates in Science and Engineering every year - I'm slowly exploring the insight the 2020 survey data provides.   
+![RaceVsSalary](https://user-images.githubusercontent.com/29489651/205301371-3f0856ca-07d7-424f-9728-6ac2b57b4a2f.jpg)
+*Figure 2: Salary to Living Wage Ratio for Biology PhD assistantships and the programs racial composition for full-time doctoral students (as reported by NSF's 2020 survey). Here we use NSF's coding, where Indian is equal to American Indian or Alaska Native and Pacific is equal to Native Hawaiian or Other Pacific Islander. This data was sampled on 11/30/2022. *
+
 
 # Other databases 
 
