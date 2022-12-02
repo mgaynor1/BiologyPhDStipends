@@ -24,7 +24,8 @@ I wanted to know how the US News National University Rankings ([compiled by Andr
 ## Full-time Doctoral Students Race Pie's for Salary/Living Wage
 NSF conducts a Survey of Graduate Students and Postdoctorates in Science and Engineering every year - I'm slowly exploring the insight the 2020 survey data provides.   
 ![RaceVsSalary](https://user-images.githubusercontent.com/29489651/205301371-3f0856ca-07d7-424f-9728-6ac2b57b4a2f.jpg)
-*Figure 2: Salary to Living Wage Ratio for Biology PhD assistantships and the programs racial composition for full-time doctoral students (as reported by NSF's 2020 survey). Here we use NSF's coding, where Indian is equal to American Indian or Alaska Native and Pacific is equal to Native Hawaiian or Other Pacific Islander. This data was sampled on 11/30/2022. *
+
+*Figure 2: Salary to Living Wage Ratio for Biology PhD assistantships and the programs racial composition for full-time doctoral students (as reported by NSF's 2020 survey). Here we use NSF's coding, where Indian is equal to American Indian or Alaska Native and Pacific is equal to Native Hawaiian or Other Pacific Islander. This data was sampled on 11/30/2022.*.  
 
 
 # Other databases 
