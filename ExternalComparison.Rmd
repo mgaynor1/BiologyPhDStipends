@@ -1,0 +1,822 @@
+---
+title: "Biology PhD Stipends 2022 \n "
+author: "Michelle L. Gaynor and Rhett M. Rautsaw"
+output: html_document
+runtime: shiny
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+}
+  h1.title {
+  font-size: 50pt;
+  color: Black;
+}
+  .main-container {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+  .nav-pills>li>a {
+  background-color: AliceBlue;
+  border: 1px solid Black;
+}
+</style>
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C95PJVBTJJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-C95PJVBTJJ');
+</script>
+
+<meta name="google-site-verification" content="uC_T-EAykO9cKod4yS2CWh_LADIDAiStwWE1mZmpoQM" />
+<meta name="title" content="Biology PhD Stipends 2022"/>
+<meta name="description" content="Biology Ph.D. Stipend database. Created to advocate for a living-wage for Biology graduate students at the University of Florida. We hope this dataset will help others advocate for a living wage."/>
+<meta name="twitter:title" content="Biology PhD Stipends"/>
+<meta name="twitter:description" content="Biology Ph.D. Stipend database."/>
+<meta name="twitter:image" content="https://github.com/RhettRautsaw/ShinyServer/blob/master/welcome_page/img/BiologyPhDStipends.svg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:creator" content="@shellygaynor @ReptileRhett"/>
+<meta name="twitter:site" content="@shellygaynor @ReptileRhett"/>
+<meta property="og:title" content="Biology PhD Stipends"/>
+<meta property="og:description" content="Biology Ph.D. Stipend database."/>
+<meta property="og:image" content="https://github.com/RhettRautsaw/ShinyServer/blob/master/welcome_page/img/BiologyPhDStipends.svg"/>
+<meta property="og:type" content="website"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="article:author" content="Michelle Gaynor"/>
+<meta property="article:author" content="Rhett Rautsaw"/>
+
+
+\@[ShellyGaynor](https://twitter.com/ShellyGaynor){target="blank"} and \@[ReptileRhett](https://twitter.com/ReptileRhett){target="blank"}.
+
+___   
+
+
+```{r  context="setup", message=FALSE, warning=FALSE, include=FALSE}
+# Load Packages
+library(googlesheets4)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(gghighlight)
+library(knitr)
+library(kableExtra) 
+library(usmap)
+library(scales)
+library(tidyr)
+library(plotly)
+library(ggpubr)
+library(wordcloud2)
+library(forcats)
+
+#devtools::install_github("lepennec/ggwordcloud")
+#library(ggwordcloud)
+# Function
+Percentile <- function(val, all_vals){
+  p <- quantile(all_vals, probs = seq(0, 1, by = .001))
+  ## Thanks Eric Goolsby for shortening this code!
+  per <- as.numeric(gsub(pattern = "%",
+                           replacement = "",names(p[length(which(p<=val))])))
+  return(per)
+ }
+
+# Load database
+gs4_deauth()
+doc <- read_sheet("https://docs.google.com/spreadsheets/d/1rBOn60tBM6J2iCEbRQdH4Fb2sqCVKi90McpKwD8Tmlc/edit?usp=sharing")
+
+# Convert character columns to factors
+doc <- doc %>% mutate_if(is.character, as.factor)
+
+# Order and rename factors
+doc$AAU <- factor(doc$AAU, levels = c("No", "Yes"))
+levels(doc$AAU) <- c("Non-AAU", "AAU")
+
+doc$Public <- factor(doc$Public, levels = c("No", "Yes"))
+levels(doc$Public) <-    c("Private", "Public")
+
+doc$`Land Grant` <- factor(doc$`Land Grant`,levels = c("No", "Yes"))
+levels(doc$`Land Grant`) <-  c("Not Land Grant", "Land Grant")
+
+doc$`Appointment term`  <- factor(doc$`Appointment term`, levels = stringr::str_sort(unique(doc$`Appointment term`), numeric = T))
+
+doc$`Carnegie Classification`  <- factor(doc$`Carnegie Classification`, levels = c("Very High Research Activity","High Research Activity"))
+
+doc$Graduate.Union  <- factor(doc$Graduate.Union, levels = c("No", "Yes", "In-progress"))
+levels(doc$Graduate.Union) <- c("No Graduate Union", "Graduate Union", "Graduate.Union In-progress")
+
+doc$`Summer support guaranteed`  <- factor(doc$`Summer support guaranteed` , levels = c("No", "Yes"))
+levels(doc$`Summer support guaranteed`) <-  c("No Guaranteed Summer Support", "Guaranteed Summer Support")
+
+# Match to regions 
+regiondf <- read.csv("regionmatch.csv")
+doc <- dplyr::left_join(doc, regiondf, by = "State")
+doc$Region <-factor(doc$Region, levels = c( "Midwest", "Northeast", "Pacific", "South", "West" ))
+doc$Subregion <-factor(doc$Subregion, levels = c("Pacific", "West South Central", "West North Central", "Mid Atlantic", "South Atlantic", "New England","Mountain", "East North Central", "East South Central" ))
+
+# Adding source information
+doc <- doc %>%
+       dplyr::mutate(Source.Type = if_else(grepl("http", doc$Source, fixed = TRUE) == TRUE, "Publicly Available", 
+                                    if_else(grepl("Not publicly listed*", doc$Source, fixed = TRUE) == TRUE, 
+                                                        "Not Publicly Available", "Not Publicly Available")))
+
+doc$Source.Type <- factor(doc$Source.Type, levels = c("Not Publicly Available", "Publicly Available"))
+
+# Select relevant columns
+doc <- doc %>% dplyr::select(University, Department, 
+                 `Appointment term`, `Summer support guaranteed`, 
+                 `Annual guaranteed salary`, `Carnegie Classification`, 
+                 AAU, `Land Grant`, 
+                 Public, State,
+                 City, `MIT Living Wage (1 adult, 0 children)`, 
+                 `Salary/Living`, Abbreviation, 
+                 University_ID, Graduate.Union, Region, Subregion, Source.Type)
+```
+
+# Introduction
+
+Graduate students are the engine that keep scientific discovery alive. During the duration of their graduate program, students typically work as research or teaching assistants and therefore compensated with tuition remission and a salary. These salaries are often insufficient to support an individual; many students are only able to survive because of family or spouse assistance, secondary sources of income (prohibited on most RA/TA contracts and for international students), fellowships, or going into debt.
+
+This dataset was initially collected for graduate stipend negotiations within the Department of Biology at the University of Florida; however, after [feedback on my tweet](https://twitter.com/ShellyGaynor/status/1511072546405425161?s=20&t=7ktxGiExZJMgQDkN3qKecQ){target="blank"}, we decided to expand this dataset via crowd-sourcing. **Add additional Universities to our dataset via our [Google Form](https://forms.gle/xTRx4UHvuhyXRNFu7){target="blank"}.** This dataset is currently incomplete and we hope it will improve with time. We hope this dataset will help others advocate for a living wage.
+
+Did your program decide to increase salaries? Update our database (and make my day) using this [Google Form](https://forms.gle/MXFa1jkzEtnb9A2x7){target="blank"}!   
+
+We will be manually checking every submission before adding it to our main datasheet, please allow 36 - 72 hours for your entry to appear. **If you find any errors, please let us know [via our other Google Form](https://forms.gle/dzosvKsiYnQSkDhP9){target="blank"}.** A link to the full dataset can be found below.
+
+This work was recently featured in [Nature](https://www.nature.com/articles/d41586-022-01392-w){target="blank"} and [Science](https://www.science.org/content/article/ph-d-students-demand-wage-increases-amid-rising-cost-living#.YowZEgLeD54.twitter){target="blank"}. 
+
+
+___
+
+
+# Results {.tabset .tabset-fade .tabset-pills}
+Click through the tabs below:
+
+## Current Dataset
+This dataset was last updated on `r googlesheets4::gs4_deauth(); googlesheets4::gs4_get("https://docs.google.com/spreadsheets/d/1rBOn60tBM6J2iCEbRQdH4Fb2sqCVKi90McpKwD8Tmlc/edit?usp=sharing")$sheets$name[1]`.
+
+The current dataset has `r nrow(doc)` entries from `r length(levels(doc$University_ID))` Universities and `r length(levels(doc$Department))` Departments, the word cloud shows the common words found in the full department names. PhD appointments occur in `r length(levels(doc %>% pull("Appointment term")))` different terms (`r levels(doc %>% pull("Appointment term"))`).
+
+<center>
+```{r  context="render", echo=F, eval=T,  fig.align='center'}
+department_string = doc %>% 
+                    dplyr::summarize_all(~paste(unique(.), collapse=" ")) %>% 
+                    dplyr::pull(Department)
+
+department_string <- gsub("and", "", department_string)
+department_string <- gsub("of", "", department_string)
+department_string <- gsub("School", "", department_string)
+department_string <- gsub(",", "", department_string)
+department_string <- gsub("&", "", department_string)
+department_string <- gsub("  +", " ", department_string)
+department_string <- tolower(department_string)
+ds <- strsplit(department_string, " ")
+ds  <- as.data.frame(table(ds[[1]]))
+ds$Var1 <- as.character(ds$Var1)
+
+
+wordcloud2(ds, size = 1,color = "#0021A5")
+
+```
+</center>
+
+Currently, our dataset includes Universities in `r length(unique(doc$State))` States (including the District of Columbia) and `r length(levels(doc$City))` Cities. For the following graphs, regions and subregions are based on the [census definitions](https://www2.census.gov/geo/pdfs/maps-data/maps/reference/us_regdiv.pdf){target="blank"}.
+
+```{r  context="render", echo=F, eval=T, fig.align='center'}
+cslist <- doc %>% group_by(State) %>% count() %>% rename(state=State)
+
+plot_usmap("states", data = cslist,   values = "n", labels = TRUE) +
+  ggplot2::scale_fill_binned(low = "#fee0d2", high = "red", na.value="white", 
+                                 limits=c(0, max(cslist$n)), breaks= pretty_breaks()) +
+  ggplot2::theme(legend.position = "right") +
+  ggplot2::scale_x_continuous(expand = c(0, 0)) +
+  ggplot2::scale_y_continuous(expand = c(0, 0)) +
+  ggplot2::labs(fill = "Count")
+```
+   
+
+<br> <br> <br> <br> <br>
+
+___   
+
+## Salaries for Biology PhD Students
+
+### General Distribution
+
+Set input values for the following two sets of graphs here. Blue dash lines indicate the value of the University selected. Solid lines indicate the plots mean.
+
+Note, we simply classified graduate unions as "yes", "no", or "in-progress". Since we do not specify the union type, date of establishment, or current level of acceptance, this data does not truly quantify the effects of graduate unions on salary. Find out more information on current student employee unions from [WashU Undergraduate & Graduate Workers Union](https://wugwu.org/resources/graduate-and-undergraduate-student-unions){target="blank"}.     
+
+   
+```{r context="render", echo=F, eval=T, fig.align='center'}
+fluidPage(
+  #tags$head(includeHTML(("google-analytics.html"))),
+  column(6,
+  selectizeInput(inputId = "university", label = h4("University:"),
+              choices = sort(doc$University), selected = "University of Florida", 
+              multiple = FALSE),
+  selectInput("variable", label = h4("Variable:"),
+              choices = c(colnames(doc)[unlist(lapply(doc, is.numeric))]), 
+              selected = "Annual guaranteed salary")),
+  column(6,
+  selectInput("fill", label = h4("Group By (see next plot):"),
+              choices = c("AAU", "Appointment term", 
+                          "Carnegie Classification", "Summer support guaranteed", 
+                          "Land Grant", "Public", 
+                          "Graduate.Union", "Region",
+                          "Subregion"),
+              selected = c("Public","Land Grant"), multiple=T),
+  numericInput("bins", label = h4("Number of bins:"), value = 10))
+)
+```
+
+```{r context="server", echo=F, eval=T, fig.align='center'}
+output$gd <- renderPlot(height=600, {
+  # Extract Values for selections
+  val = doc %>% 
+        filter(University %in% input$university) %>%
+        pull(!!as.name(input$variable))
+  all_vals = doc %>% 
+             pull(!!as.name(input$variable))
+  
+  # Calculate Percentile
+  percentile = Percentile(val, all_vals)
+  percentile_lab = ifelse(val > 1, 
+                          paste0(input$university, "\n$", 
+                                 format(val, nsmall=2, big.mark=","),"\n", 
+                                 percentile," Percentile"),
+                          paste0(input$university, "\n",  
+                                 format(val, nsmall=2, big.mark=","),"\n",
+                                 percentile," Percentile"))
+  
+  # Calculate Mean
+  mean_val = round(mean(all_vals), 2)
+  n_val = length(all_vals)
+  mean_lab = ifelse(mean_val > 1, 
+                    paste0("Overall Mean: $", 
+                           format(mean_val, nsmall=2, big.mark=","), 
+                           "\n","n = ", n_val),
+                    paste0("Overall Mean: ",  
+                           format(mean_val, nsmall=2, big.mark=","), 
+                           "\n","n = ", n_val))
+  
+  # Initiate Plot
+   p = ggplot(doc, aes(x = !!as.name(input$variable))) +
+        geom_histogram(bins=input$bins, alpha = 0.7, fill="cyan4")
+  
+  # Label Position
+  xpos = layer_scales(p)$x$range$range[2]
+  ypos = layer_scales(p)$y$range$range[2]
+  
+  # Finish Plot
+   p +
+    # Add University Value
+    geom_vline(aes(xintercept=val), color="blue", linetype="dashed", size=1) +
+    annotate("text", x=xpos, y=ypos*0.80, label=percentile_lab,
+             color = "blue", size=6, hjust=1) +
+    # Add Mean Value
+    geom_vline(aes(xintercept=mean_val), color="red", linetype="solid", size=1) +
+    annotate("text", x=xpos, y=ypos*0.95, 
+             label=mean_lab, color = "red", size=6, hjust=1) + 
+    # Aesthetics
+    xlab(input$variable) + ylab("Count") + theme_bw() + 
+    theme(text = element_text(size = 20)) +
+    scale_y_continuous(breaks= pretty_breaks())
+})
+```
+
+```{r echo=F, eval=T, fig.align='center'}
+plotOutput("gd",  width = "auto", height = "auto")
+```
+   
+
+<br> <br>
+
+   
+### By Group
+
+Salaries for Biology PhD Students separated by the group(s) selected above. The grey histograms represent the mean histogram of all programs, all sub-group histograms are plotted in color.
+
+```{r context="server", message=FALSE, warning=FALSE, echo=FALSE, eval=T, fig.align = 'center'}
+h = reactive({
+  doc2 = doc %>% 
+         unite("Classification", input$fill, sep=", ", remove=FALSE) %>% 
+         mutate(Classification = as.factor(Classification))
+  return(480*(length(levels(doc2 %>% pull(Classification)))/2))
+})
+
+output$bg <- renderPlot(height = function(){h()}, {
+  
+  # Create Classifications
+  doc2 = doc %>% 
+         unite("Classification", input$fill, sep=", ", remove=FALSE) %>% 
+         mutate(Classification = as.factor(Classification))
+  
+  # Extract Values for selections
+  tmp = doc2 %>% 
+        filter(University %in% input$university)
+  val = tmp %>% 
+        pull(!!as.name(input$variable))
+  facet_val = tmp %>% 
+              pull(Classification)
+  all_vals = doc2 %>% 
+             filter(Classification == facet_val) %>% 
+             pull(!!as.name(input$variable))
+
+  # Calculate Percentile
+  percentile = Percentile(val, all_vals)
+  percentile_lab = ifelse(val > 1, 
+                          paste0(input$university, "\n$", 
+                                 format(val, nsmall=2, big.mark=","),"\n",
+                                 percentile," Percentile"),
+                          paste0(input$university, "\n",  
+                                 format(val, nsmall=2, big.mark=","),"\n",
+                                 percentile," Percentile"))
+  
+  # Calculate Mean
+  facet_means = doc2 %>% 
+                group_by(Classification) %>% 
+                summarize(n=n(), mean=mean(!!as.name(input$variable))) %>% 
+                mutate(labs = paste0(
+                  ifelse(mean>1, 
+                   paste0("Mean: $", format(mean, nsmall=2, big.mark=",")), 
+                   paste0("Mean: ", format(mean, nsmall=2, big.mark=","))),
+                   "\n", "n = ",n))
+
+  # Initiate Plot
+  p = ggplot(doc2, aes(x = !!as.name(input$variable), fill = Classification)) + 
+        geom_histogram(bins=input$bins, alpha = 0.4)
+  
+  # Label Position
+  xpos = layer_scales(p)$x$range$range[2]
+  ypos = layer_scales(p)$y$range$range[2]
+  
+  # Finish Plot
+  p +
+   # Add University Value
+    geom_vline(data=tmp, aes(xintercept=val), color="blue", linetype="dashed", size=1) +
+    geom_text(data=tmp, aes(x=xpos, y=ypos*0.70), label=percentile_lab, 
+              color = "blue", size = 6, hjust=1, inherit.aes = FALSE) +
+    gghighlight() +
+    # Add Mean Value
+    geom_vline(data=facet_means, aes(xintercept=mean, color = Classification), size=1) + 
+    geom_text(data=facet_means, aes(x=xpos, y=ypos*0.95, label=labs, color = Classification), size=6, hjust=1, inherit.aes=FALSE) + 
+    # Aesthetics
+    xlab(input$variable) + ylab("Count") + 
+    scale_y_continuous(breaks= pretty_breaks()) +
+    facet_wrap(~ get("Classification"), ncol=2) + theme_bw() + 
+    theme(text = element_text(size = 20), 
+          axis.text.x = element_text(angle = 45,  vjust = 1, hjust=1))
+})
+```
+
+```{r echo=F, eval=T, fig.align='center'}
+plotOutput("bg",  width = "auto", height = "auto")
+```
+   
+
+<br> <br> <br> <br> <br>
+
+___   
+
+
+## Salary to Living Wage
+
+Here we examine the relationship between Guaranteed Annual Salary and [MIT calculated living wage](https://livingwage.mit.edu/){target="blank"}. Some institutions have multiple stipend rates dependent on stage of student in graduate program, however, for this comparison we chose the starting salary of each program. The living wage is for a single adult with no children.
+
+**Justification**: MIT living wage is an annual wage, though some students are covered for 12 months or 9 months with summer funding required, we also treat the 9 month appointments without required summer funding as annual salaries. If a student is only legally contracted for 9 months with summer funding suggested, we found that many students do not get summer funding due to limited teaching assistantships and research assistantships. Most research assistantships are dependent on research grants which are typically 3 years, while PhD's are 5-8 years. RA's often cannot be guaranteed even if the faculty member has the best intentions. If a student does not receive an RA or TA, they are often still expected/encouraged to make research progress and external jobs/work is discouraged. Additionally, international student visa's stipulate that they cannot work outside the university, so though domestic students could potentially pick up a job elsewhere, international students cannot.
+
+**Plot information**: The asterisk represents the 'University' selected. The black line represents a 1:1 ratio between salary and living wage. The grey line is a linear regression of all plotted points with a 95% confidence interval.
+
+**Navigating the Plot**: Click and drag to zoom in. Hold down shift and drag to pan across the plot. Double click to return to the full plot.
+
+```{r context="render", message=FALSE, warning=FALSE, echo=FALSE, eval=T}
+fluidPage(
+  column(4,
+         selectizeInput(inputId = "university2", 
+                        label = h4("University:"),
+                        choices = sort(doc$University), 
+                        selected = "University of Florida", multiple = FALSE)),
+  column(4,
+         selectInput("display", 
+                     label = h4("Display:"),
+                     choices = c("All", "University Appointment Term"),#"9 month", "10 month", "12 month"), 
+                     selected = "All")),
+  
+  column(4,
+         selectInput("fill2", 
+                     label = h4("Color By:"),
+                      choices = c("AAU", "Appointment term",
+                                  "Carnegie Classification", "Summer support guaranteed", 
+                                  "Graduate.Union", "Region", 
+                                  "Subregion", "Source.Type"),
+              selected = c("AAU"), multiple=T))
+         # h4("Point Labels"), checkboxInput("checkbox", "", value = FALSE)
+)
+```
+
+```{r context="server", message=FALSE, warning=FALSE, echo=FALSE, eval=T}
+p=reactive({
+#renderPlot(height=600, { 
+  
+  # Create Classifications
+  doc2 = doc %>% 
+    unite("Classification", c("Public", "Land Grant"), sep=", ", remove=FALSE) %>%
+    unite("Classification2", input$fill2, sep=", ", remove=FALSE) %>% 
+    mutate(Classification = as.factor(Classification), 
+           Classification2 = as.factor(Classification2))
+  
+ # if(length(input$fill2)==1 & input$fill2 == "AAU"){
+   # doc2$Classification2 <- factor(doc2$Classification2) #,
+                                   #levels = c("Non-AAU", "AAU"))
+  #}
+  # Extract Values for selections
+  if(input$display != "All"){
+    appt_term = doc2 %>% 
+                filter(University == input$university2) %>% pull(`Appointment term`) 
+    plotdf = doc2 %>% 
+             filter(`Appointment term` == appt_term)
+  }else{
+    plotdf = doc2
+  }
+  val <- doc2 %>% 
+         filter(University == input$university2)
+  axis_max = max(c(doc2$`Annual guaranteed salary`, doc2$`MIT Living Wage (1 adult, 0 children)`))
+  axis_min = min(c(doc2$`Annual guaranteed salary`, doc2$`MIT Living Wage (1 adult, 0 children)`))
+  xpos=((axis_max-axis_min)*0.15) + axis_min
+  ypos=((axis_max-axis_min)*0.85) + axis_min
+  
+  # Linear Regression
+  mod = summary(lm(plotdf$`Annual guaranteed salary`~plotdf$`MIT Living Wage (1 adult, 0 children)`))
+  mod_lab = paste0("m = ", round(mod$coefficients[2],2), "\n",
+                   "R² = ", round(mod$adj.r.squared, 2), "\n",
+                   "p = ", format(mod$coefficients[8], digits = 3))
+  
+  # Classification  Shapes
+  pt_shps = c(17, 16, 2, 1); names(pt_shps) = levels(doc2$Classification)
+  
+  # Finish Plot
+  # if(input$checkbox){
+  #   p = ggplot() +
+  #     geom_point(plotdf, mapping = aes(x = `MIT Living Wage (1 adult, 0 children)`,
+  #                                      y = `Annual guaranteed salary`,
+  #                                      col = Classification2,
+  #                                      #fill = Classification2,
+  #                                      shape = Classification), size = 3) +
+  #     scale_shape_manual(values= pt_shps) +
+  #     geom_label_repel(data=plotdf,
+  #                      mapping=aes(x = `MIT Living Wage (1 adult, 0 children)`,
+  #                                  y = `Annual guaranteed salary`,
+  #                                  label=Abbreviation))
+  # }else{
+    p = ggplot() + 
+        geom_point(plotdf, mapping = aes(x = `MIT Living Wage (1 adult, 0 children)`,
+                                       y = `Annual guaranteed salary`,
+                                       col = Classification2,
+                                       shape = Classification, 
+                                       text=paste(University_ID, Department, `Appointment term`, 
+                                                   paste0("Salary: ",`Annual guaranteed salary`), 
+                                                   paste0("MIT: ", `MIT Living Wage (1 adult, 0 children)`), sep="\n"),
+                                       ), size = 3) +
+      scale_shape_manual(values= pt_shps)
+  # }
+  
+  p = p + 
+      geom_point(val, mapping = aes(x = `MIT Living Wage (1 adult, 0 children)`,
+                                  y = `Annual guaranteed salary`),
+               col = "black", fill = "black", size = 6, shape = 8) +
+    geom_smooth(plotdf, method=lm, na.rm = TRUE, fullrange=FALSE, 
+                mapping = aes(x = `MIT Living Wage (1 adult, 0 children)`, 
+                              y = `Annual guaranteed salary`), 
+                colour="gray", formula = "y ~ x", level = 0.95) +
+     geom_text(aes(x = xpos, y=ypos, label=mod_lab), size=6, hjust=0, vjust=2, inherit.aes=FALSE) + 
+    geom_abline(intercept = 0, slope = 1, size = 0.5) +
+    xlim(axis_min, axis_max) + 
+    ylim(axis_min, axis_max) + 
+    theme_bw() + 
+    theme(text = element_text(size = 20))
+  
+  if(input$display != "All"){
+    p = p + geom_text(data=data.frame(), 
+                  aes(label = paste0("\n       ",appt_term),
+                      x = -Inf, y = Inf), size=6, hjust = 0, vjust = 1, 
+                  inherit.aes=FALSE)
+  }
+  return(p)
+})
+
+output$ppl <- renderPlot(height=200, {
+  as_ggplot(get_legend(p() + theme(legend.text=element_text(size=15),
+                                   legend.title=element_blank()) + 
+                         guides(col=guide_legend(ncol=7, nrow = 8)) + guides(shape=guide_legend(ncol=4, nrow=1))
+                       ))
+})
+
+output$pp <- renderPlotly({ #tooltip = c("Univ", "Dept","Term","Sal","MIT")
+    ggplotly(p(), tooltip = c("text"), height = 900, width=900) %>% config(displayModeBar = FALSE, responsive = FALSE) %>%
+      layout(showlegend = FALSE)#, legend = list(title="Group", y=-0.2, orientation = 'h', font = list(size = 12)))
+})
+```
+
+```{r eval=T, echo=F, message=F, warning=F}
+plotOutput("ppl",  width = "auto", height = "auto")
+plotlyOutput("pp", width = "auto", height = "auto")
+```
+
+
+```{r eval=FALSE,  message=FALSE, warning=FALSE, include=FALSE}
+meanlinesm <- round(mean(doc$`Annual guaranteed salary`), digits = 2)
+meanlineslm <- round(mean(doc$`Salary/Living`), digits = 2)
+
+sm <- ggplot(doc, aes(x = `Annual guaranteed salary` )) + 
+    geom_histogram(bins=10, alpha = 0.7, fill="cyan4") +
+    geom_vline(aes(xintercept=meanlinesm), color="red", linetype="solid", size=1) +
+    annotate("text", x=meanlinesm, y=-0.25, label=paste0("mean = $", meanlinesm), color = "red", size=5, hjust=0)  +
+     xlab("Annual guaranteed salary") + ylab("Count") + theme(text = element_text(size = 13))
+slm <- ggplot(doc, aes(x = `Salary/Living` )) + 
+    geom_histogram(bins=10, alpha = 0.7, fill="cyan4") +
+    geom_vline(aes(xintercept=meanlineslm), color="red", linetype="solid", size=1) +
+    annotate("text", x=meanlineslm, y=-0.25, label=paste0("mean = ", meanlineslm), color = "red", size=5, hjust=0)  +
+     xlab("Salary/Living Wage") + ylab("Count") + theme(text = element_text(size = 13))
+
+grid.arrange(sm, slm, nrow = 1)
+```
+
+
+
+
+<br> <br> <br> <br> <br>
+
+
+___   
+
+## FAQ  
+
+### What is MIT Living Wage?   
+A detailed  breakdown of the [MIT Living Wage calculator can be found here](https://livingwage.mit.edu/resources/Living-Wage-Users-Guide-Technical-Documentation-2022-05-10.pdf){target="blank"}.
+
+Briefly, the **basic needs budget** equals the sum of: (1) food cost; (2) health costs, which are equal to insurance premiums plus out of pocket health care costs; (3) housing cost (based on HUD Fair Market Rents estimates); (4) transportation cost; (5) other necessities cost (*i.e.*, clothing, personal care, and housekeeping supplies); (6) civic engagement (based on the Consumer Price Index); & (7) broadband which is the cost of cell phone service and internet.
+
+The **living wage** is then equal to the basic needs budget plus tax, which is equal to simply the basic needs budget*(Federal tax rate + State tax rate).
+
+### Why didn't you adjust for subsidized housing?   
+A small subset of programs have subsidizing housing available. If you are a prospective student, we suggest you consult with the programs website for any programs in high cost areas to find out more about potential subsidized housing opportunities.     
+
+
+### Why didn't you deduct health insurance costs from the MIT estimates? 
+
+Many programs provide some form of health insurance, but we decided not to modify the total health costs included in the MIT calculation.
+
+Based on the information provided regarding health costs in the [detailed  breakdown of the MIT Living Wage calculator](https://livingwage.mit.edu/resources/Living-Wage-Users-Guide-Technical-Documentation-2022-05-10.pdf){target="blank"}, it seems health insurance cost is only a chunk of the total costs in this category. For a single adult, health insurance cost is calculated at a State level, we found that this value's maximum is \$1,838 and its minimum is \$736 annually. Though deducting this cost from the basic needs budget may make a difference for programs very close to the 1:1 line between salary and living wage, we did not find this adjustment made much difference in the overall trends of the current dataset.
+
+Additionally, many program's annual reported fees are also within the same cost range. Therefore, adding fees to the basic needs budget and deducting health insurance costs would likely result in only slight (<$1000) shifts in the total cost of living. 
+
+#### Example:  
+University of Florida, Gainesville, FL.
+
+  *Basic information*
+
+    Annual Salary: $18650
+    MIT Basic Needs Budget: $27664 
+    Taxes: $4485
+    Living Wage: $32148
+    Salary/Living: 0.580
+
+  *Adjustment calculation*  
+
+    MIT Health Insurance Cost: $1581.36  
+    Annual Fees (tuition fees, health insurance deduction): $1165.28  
+    Calculated Adjustment: $1581.36 - $1165.28 = $416.08   
+
+  *Final Adjustment* 
+
+    Adjusted MIT Basic Needs Budget: $27248  
+    Adjusted Taxes: $4417.56
+    Adjusted Living Wage: $31665.56  
+    Adjusted Salary/Living: 0.588
+
+    
+### How do the data collected here compare to the [PhD Stipends database](https://www.phdstipends.com/){target="blank"}?
+```{r context="render", eval=T, echo=F, message=F, warning=F}
+# Load phdstipend
+phd <- read.csv("http://www.phdstipends.com/csv") #http://www.phdstipends.com/csv
+
+## Clean up phdstipend
+# Fix some names
+phd$Overall.Pay <-  as.numeric(gsub('[$,]', '', phd$Overall.Pay))
+phd$Fees <-  as.numeric(gsub('[$,]', '', phd$Fees))
+phd$University <- gsub( "\\s\\(.*$", "", phd$University)
+phd$University <- gsub( "\\s$", "", phd$University)
+phd$University <- gsub(" - SUNY", "", phd$University, fixed = TRUE)
+phd$Department <- gsub("\\s$", "", phd$Department)
+
+# Adjust pay
+phd <- phd %>%
+       mutate(Overall.Pay.A = if_else(is.na(Fees) == FALSE, Overall.Pay + Fees, Overall.Pay))
+        
+
+# Set years to keep
+yearskeep <- c("2022-2023", "2021-2022", "2020-2021", "2019-2020")
+departments <- unique(doc$Department)
+uni <- unique(doc$University_ID)
+
+UD <- phd %>% 
+  dplyr::filter(stringr::str_detect(Department, paste(departments, collapse="|"))) %>%
+  dplyr::filter( stringr::str_detect(University, paste(uni, collapse="|"))) %>%
+  dplyr::filter(Academic.Year %in% yearskeep)%>%
+  dplyr::filter(Overall.Pay.A > 100)
+
+# Remove masters 
+masterwords <- c('MS | M.S. | Masters | master | masters | Master | ms')
+UD <- UD[!grepl(pattern = masterwords, x = UD$Comments ), ]
+```
+
+The [PhD Stipends database](https://www.phdstipends.com/){target="blank"} has `r if(exists("UD")){nrow(UD)}else{paste("?")}` observations for Universities and Departments included in our dataset and reported for 2019-2023. This database reports overall pay as the sum of 12 month, 9 month, and 3 month reported income minus the cost of fees. Since we do not account for fees in our dataset, we adjusted the overall pay to be equal to overall pay plus fees. 
+
+Here we show the mean difference between the [PhD Stipends database](https://www.phdstipends.com/){target="blank"} adjusted overall pay and our annual guaranteed salary. Positive values most likely represent summer appointments, fellowships, or other opportunities that would increase overall salaries. Negative values may represent recently increased salaries, however these may be incorrectly reported salaries or may represent master student's salary.  
+
+```{r context="render", echo=F, eval=T,  fig.align='center', out.width='75%', fig.height=8.5}
+##
+# actionButton("PhDStipendsDB", "Run Analysis")
+# 
+# p2 <- eventReactive(input$PhDStipendsDB, {
+docE <- data.frame(University = doc$University_ID, 
+                   Department = doc$Department,
+                   AS =  doc$`Annual guaranteed salary`)
+UDsub <- data.frame(University = UD$University, 
+                    Department = UD$Department,
+                    Overall.Pay = UD$Overall.Pay.A)
+docUD <- full_join(docE, UDsub, by =c("University", "Department"))
+
+docUD2 <- docUD %>%
+          dplyr::mutate(Difference = Overall.Pay - AS,
+                        UD = paste0(University, " - ", Department)) %>%
+          filter(!is.na(Difference)) %>%
+          group_by(UD) %>%
+          dplyr::summarise("Mean" = round(mean(Difference),digits=2), 
+           "range.min" =  round(min(Difference),digits=2),
+           "range.max" =  round(max(Difference),digits=2),
+           .groups = "keep")
+
+docUD2 <- docUD2 %>%
+          mutate(type = ifelse(Mean > 0, "positive", "negative"))
+
+axis_max = max(abs(docUD2$Mean), na.rm=T)
+
+ggplot(docUD2, aes(y=Mean, x=UD, fill = type)) +
+  geom_col(size=2) + ylim(-axis_max,axis_max) +
+  #theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)) +
+  ylab("Mean Difference") +
+  xlab("University - Department") + 
+  coord_flip() + 
+  theme(legend.position="none", axis.text.y = element_text(size = 7))
+# })
+# 
+# renderPlot(height=612, width=750, {
+#   p2()
+#   })
+
+```
+
+
+### How far is our salary from the MIT Living Wage?
+
+```{r context="render", echo=F, eval=T,  fig.align='center', out.width='75%', fig.height=17}
+# actionButton("MITLivingWage", "Run Analysis")
+# 
+# p3<- eventReactive(input$MITLivingWage, {
+doc_mut <- doc %>%
+  mutate(daway = (`MIT Living Wage (1 adult, 0 children)` - `Annual guaranteed salary`)) %>%
+  mutate(daway_type = ifelse(daway > 0, "negative", "positive"), 
+         UD = paste0(University, " - ", Department)) %>%
+  mutate(University_ordered = forcats::fct_reorder(.f = University, .x = desc(daway)))
+
+daway_axis_max = max(abs(doc_mut$daway), na.rm=T)
+daway_axis_max = (daway_axis_max + (daway_axis_max*0.2))
+daway_axis_min =  min(doc_mut$daway)
+
+ggplot(doc_mut, aes(y=daway, x=University_ordered, fill = daway_type)) +
+  geom_col(size=2) + 
+  #theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)) +
+  ylab("$ Distance from a Living Wage Salary") +
+  xlab("University") + 
+  coord_flip() + 
+  theme(legend.position="none", axis.text.y = element_text(size = 7)) +
+   geom_text(aes(label=paste0("$",format(daway, nsmall=2, big.mark=",") )), position=position_dodge(width=0.9), hjust=-0.25, size = 2) +
+  scale_y_continuous(breaks= pretty_breaks(), limits = c(daway_axis_min, daway_axis_max))
+# })
+# 
+# renderPlot(height=1224, width=750, {
+#   p3()
+#   })
+```
+
+<br> <br> <br> <br> <br>
+
+___
+
+## Additional Information
+
+[Our full dataset can be found here.](https://docs.google.com/spreadsheets/d/1rBOn60tBM6J2iCEbRQdH4Fb2sqCVKi90McpKwD8Tmlc/edit?usp=sharing){target="blank"} **If you find any errors, please let us know [via our other Google Form](https://forms.gle/dzosvKsiYnQSkDhP9){target="blank"}.**    
+
+### Media Coverage
+
+  - "The scandal of researchers paid less than a living wage". 11-02-2022. Nature, 611: 8. [doi: 10.1038/d41586-022-03472-3](https://doi.org/10.1038/d41586-022-03472-3){target="blank"}.   
+  
+  
+  - "PhD students face cash crisis with wages that don’t cover living costs". 05-23-2022. Nature, 605: 775-777. [doi:10.1038/d41586-022-01392-w.](https://www.nature.com/articles/d41586-022-01392-w){target="blank"} 
+      - Top 5% [Altmetric Score](https://www.altmetric.com/details/128771175){target="blank"}.
+
+  - "Ph.D. students demand wage increases amid rising cost of living". 05-23-2022. Science. [doi: 10.1126/science.caredit.add1421.](https://www.science.org/content/article/ph-d-students-demand-wage-increases-amid-rising-cost-living){target="blank"}   
+
+
+### Dataset description
+
+We identified the salary and appointment term. If summer was mandatory in a department, but the term was only 9 months, we included the summer minimum in the annual guaranteed salary, which is used in all plots and calculations. We identified the [Carnegie Classification](https://cehd.gmu.edu/assets/docs/faculty/tenurepromotion/institutions-research-categories.pdf){target="blank"} for all Universities included (R1 = Very High Research Activity, R2 = High Research Activity). UF is a member of the Association of American Universities, therefore we identified if each university was a current member. UF is also a land-grant institution, which can influence federal funding, so we [identified if each university was established as a land-grant institution](https://nifa.usda.gov/about-nifa/how-we-work/partnerships/land-grant-colleges-universities){target="blank"}. Additional columns include Public/Private status, source of current stipend rate (ie. url), comments, and geographic location (State and City). We used the geographic information to identify the [MIT Living Wage](https://livingwage.mit.edu/){target="blank"}.
+
+| Column                    | Description                                                                  |
+|:--------------------------|:-----------------------------------------------------------------------------|
+| University                | Name of University. |
+| Department                | Name of Department. |
+| Salary                    | Salary based on appointment term. |
+| Appointment term          | Length of contracted appointment. |
+| 9 month prorate           | Calculated prorate for universities that offer more than 9 month appointments. |
+| Summer support guaranteed | Indication is summer appointment is required/included for every student. (Yes/No) |
+| Annual guaranteed salary  | Appointment salary plus summer minimum (if guaranteed) in the annual guaranteed salary. |
+| Carnegie Classification   | [Carnegie Classification](https://cehd.gmu.edu/assets/docs/faculty/tenurepromotion/institutions-research-categories.pdf){target="blank"} for all Universities where R1 = Very High Research Activity, R2 = High Research Activity |
+| AAU                       | Association of American Universities. (Yes/No) |
+| Land Grant                | [Based on this database](https://nifa.usda.gov/about-nifa/how-we-work/partnerships/land-grant-colleges-universities){target="blank"}. (Yes/No) |
+| Public                    | Yes if Public, No if Private. (Yes/No) |
+| Source                    | Source of current stipend rate (ie. url vs personal communication). |
+| Comment                   | Recent or consistent raises, required summer support, increases with candidacy, or differential rates for TA/RA was noted. |
+| State                     | Geographic information. |
+| City                      | Geographic information. |
+| County                    | Geographic information. |
+| MIT Living Wage           | For each geographic location, we identified the current [MIT Living Wage](https://livingwage.mit.edu/){target="blank"} (as of September 2022) for a single adult with no children. |
+| Salary/Living             | Annual guaranteed salary divided by the MIT Living Wage. | 
+| Abbreviation              | Abbreviated University name for plotting. |   
+| University_ID             | ID to control for multiple Departments per University. |
+| Graduate.Union            | Indicates if the University has a graduate student union. (Yes, No, In-progress) |
+| Graduate.Union.Source     | Links union website, when available. | 
+| Per.Month.Housing.Budget  | (Annual guaranteed salary*0.30)/12, or the 30% of the monthly pre-tax income, which is the recommended housing budget. |
+---
+
+### Citations
+
+Glasmeier, Amy K. Living Wage Calculator. 2020. Massachusetts Institute of Technology. livingwage.mit.edu.
+
+### Acknowledgments    
+
+Thank you to Dr. Anna Savage (University of Central Florida) and [the EEB Stipend Google Sheet](https://docs.google.com/spreadsheets/d/1EyTIu_FyLu_z-hXyJLlGZ9ZWN9YGKCwtESIGIAgq3EE/edit?usp=sharing){target="blank"} (Dr. Andy Kern) for directing me to stipend information for numerous universities. There are many others to thank, including the many who contributed to this dataset!
+
+Thank you to numerous faculty for their feedback on this dataset. Thanks to Mike Belitz and Caitlin Campbell for their edits. Big thanks to Dr. Jose Miguel Ponciano!
+
+This work was was inspired by Michelle Kirchner and Jane Petzoldt [publication in the American Entomologist](https://doi.org/10.1093/ae/tmac018){target="blank"}.    
+
+### Usage
+
+We hope to submit a manuscript based on these data for publication. If you plan to use this data in research, please contact michellegaynor \@ ufl.edu.  
+
+### Other Databases    
+
+There are many on-going efforts to collect graduate student's salary data in the United States:   
+
+  - [Medicine and Public Health - Teachers & Researchers United, Johns Hopkins University](https://docs.google.com/presentation/d/1U1WSWlAC-HUlfmuRHNRiFyJdRK3cgmcOKJS9N31YacE/edit){target="blank"}    
+  - [English PhD Stipends in the United States](https://profession.mla.org/english-phd-stipends-in-the-united-states-statistical-report/){target="blank"}   
+  - [Big Ten PhD Stipend and Cost of Living - University of Maryland](https://docs.google.com/spreadsheets/d/1nJKlF2grr4zBxXxFzcoNTCuM8BI1frmreyxriroJlEo/edit?usp=sharing){target="blank"}   
+  - [Entomology Graduate Stipends - Kirchner & Petzoldt](https://doi.org/10.1093/ae/tmac018){target="blank"}  
+  - [Computer Science PhD Stipends - Jeff Huang](https://jeffhuang.com/computer-science-open-data/#:~:text=awards%20collection.-,Verified%20Computer%20Science%20Ph.D.%20Stipends,-Computer%20Science%20Stipends){target="blank"}    
+  - [Verified University Minimum Stipends - University of California Strike - Liza Wood](https://liza-wood.github.io/uc-strikevote-opinion.html){target="blank"}     
+  - [Psychology Internship Stipends - Hood et al. 2022](https://psyarxiv.com/rm3bk){target="blank"}   
+  
+  
+  
+
+
+___  
+ 
+
+# Support
+
+**Want to support these efforts?** If you find this resource useful, please consider donating to help us keep this resource alive and update it further!  
+
+<style>.button2 {background-color: #ff8e6c; color: white; border-radius: 8px;}</style> 
+<a href='https://givebutter.com/C2gRUO' target="_blank"><button class="button2"> <b>Donate Here</b> </button></a>  
+
+Support for this work is provided by: 
+
+  - [Dr. Matthew Johnson](http://www.mossmatters.com/){target="blank"}    
+  - [Dr. Ryan Martin](https://www.martinevolutionaryecologylab.com/){target="blank"}    
+  - [Marc Beer](https://marcabeer.github.io/index.html){target="blank"}    
+  - [Dr. Karolina Heyduk](https://www.kheyduk.net/){target="blank"}      
+  - [Dr. Jessica Budke](http://jmbudke.github.io/){target="blank"}   
+  - [Dr. Stuart McDaniel](https://mcdaniellab.biology.ufl.edu/){target="blank"}   
+
+___
+
+

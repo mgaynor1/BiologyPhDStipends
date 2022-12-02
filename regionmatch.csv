@@ -1,0 +1,52 @@
+abbr,State,Region,Subregion
+AL,Alabama,South,East South Central
+AK,Alaska,Pacific,Pacific
+AZ,Arizona,West,Mountain
+AR,Arkansas,South,West South Central
+CA,California,West,Pacific
+CO,Colorado,West,Mountain
+CT,Connecticut,Northeast,New England
+DE,Delaware,South,South Atlantic
+DC,District of Columbia,South,South Atlantic
+FL,Florida,South,South Atlantic
+GA,Georgia,South,South Atlantic
+HI,Hawaii,Pacific,Pacific
+ID,Idaho,West,Mountain
+IL,Illinois,Midwest,East North Central
+IN,Indiana,Midwest,East North Central
+IA,Iowa,Midwest,West North Central
+KS,Kansas,Midwest,West North Central
+KY,Kentucky,South,East South Central
+LA,Louisiana,South,West South Central
+ME,Maine,Northeast,New England
+MD,Maryland,South,South Atlantic
+MA,Massachusetts,Northeast,New England
+MI,Michigan,Midwest,East North Central
+MN,Minnesota,Midwest,West North Central
+MS,Mississippi,South,East South Central
+MO,Missouri,Midwest,West North Central
+MT,Montana,West,Mountain
+NE,Nebraska,Midwest,West North Central
+NV,Nevada,West,Mountain
+NH,New Hampshire,Northeast,New England
+NJ,New Jersey,Northeast,Mid Atlantic
+NM,New Mexico,West,Mountain
+NY,New York,Northeast,Mid Atlantic
+NC,North Carolina,South,South Atlantic
+ND,North Dakota,Midwest,West North Central
+OH,Ohio,Midwest,East North Central
+OK,Oklahoma,South,West South Central
+OR,Oregon,West,Pacific
+PA,Pennsylvania,Northeast,Mid Atlantic
+RI,Rhode Island,Northeast,New England
+SC,South Carolina,South,South Atlantic
+SD,South Dakota,Midwest,West North Central
+TN,Tennessee,South,East South Central
+TX,Texas,South,West South Central
+UT,Utah,West,Mountain
+VT,Vermont,Northeast,New England
+VA,Virginia,South,South Atlantic
+WA,Washington,West,Pacific
+WV,West Virginia,South,South Atlantic
+WI,Wisconsin,Midwest,East North Central
+WY,Wyoming,West,Mountain
