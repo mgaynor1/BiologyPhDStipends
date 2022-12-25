@@ -27,6 +27,12 @@ NSF conducts a Survey of Graduate Students and Postdoctorates in Science and Eng
 
 *Figure 2: Salary to Living Wage Ratio for Biology PhD assistantships and the programs racial composition for full-time doctoral students (as reported by NSF's 2020 survey). Here we use NSF's coding, where Indian is equal to American Indian or Alaska Native and Pacific is equal to Native Hawaiian or Other Pacific Islander. This data was sampled on 11/30/2022.*.  
 
+## US News National Ranking vs Biology PhD Salaries + Program Size
+![SizeAdded](https://user-images.githubusercontent.com/29489651/209470423-496246f7-86b0-4cee-bcf3-02ea14849cc3.jpg)
+
+*Figure 3. Salary to Living Wage Ratio for Biology PhD assistantships compared to the 2023 US News National University Rankings. Shape of the points indicate if the University is public (circle) or private (triangle).  Size indicates the size of the program based on the 2020 NSF Survey of Graduate Students and Postdoctorates in Science and Engineering. The star indicates the Department of Biology at the University of Florida. This data was sampled on 11/30/2022.*.  
+
+
 
 # Other databases 
 
