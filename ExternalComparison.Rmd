@@ -774,7 +774,9 @@ Glasmeier, Amy K. Living Wage Calculator. 2020. Massachusetts Institute of Techn
 
 Thank you to Dr. Anna Savage (University of Central Florida) and [the EEB Stipend Google Sheet](https://docs.google.com/spreadsheets/d/1EyTIu_FyLu_z-hXyJLlGZ9ZWN9YGKCwtESIGIAgq3EE/edit?usp=sharing){target="blank"} (Dr. Andy Kern) for directing me to stipend information for numerous universities. There are many others to thank, including the many who contributed to this dataset!
 
-Thank you to numerous faculty for their feedback on this dataset. Thanks to Mike Belitz and Caitlin Campbell for their edits. Big thanks to Dr. Jose Miguel Ponciano!
+Thank you to numerous faculty for their feedback on this dataset. Thanks to Mike Belitz and Caitlin Campbell for their edits. Big thanks to Dr. Jose Miguel Ponciano! 
+
+We would also like to thank Alyssa Phillips for the UC updates!   
 
 This work was was inspired by Michelle Kirchner and Jane Petzoldt [publication in the American Entomologist](https://doi.org/10.1093/ae/tmac018){target="blank"}.    
 
