@@ -44,4 +44,5 @@ We keep a list on our app of other recent efforts to collect graduate student's 
   - [Computer Science PhD Stipends - Jeff Huang](https://jeffhuang.com/computer-science-open-data/#:~:text=awards%20collection.-,Verified%20Computer%20Science%20Ph.D.%20Stipends,-Computer%20Science%20Stipends) 
   - [Verified University Minimum Stipends - University of California Strike - Liza Wood](https://liza-wood.github.io/uc-strikevote-opinion.html)    
   - [Psychology Internship Stipends - Hood et al. 2022](https://psyarxiv.com/rm3bk)
+  - [Physics Graduate Student Pay - Shinbrough & Acres, American Physical Society](https://engage.aps.org/fgsa/resources/pay-data). 
   
