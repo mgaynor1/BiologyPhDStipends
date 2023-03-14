@@ -45,4 +45,7 @@ We keep a list on our app of other recent efforts to collect graduate student's 
   - [Verified University Minimum Stipends - University of California Strike - Liza Wood](https://liza-wood.github.io/uc-strikevote-opinion.html)    
   - [Psychology Internship Stipends - Hood et al. 2022](https://psyarxiv.com/rm3bk)
   - [Physics Graduate Student Pay - Shinbrough & Acres, American Physical Society](https://engage.aps.org/fgsa/resources/pay-data). 
-  
+
+# Other Resources  
+
+  - [MIT Graduate Student Cost of Living](https://gsc.mit.edu/committees/hca/cost-of-living/) - MIT Graduate Student Council
