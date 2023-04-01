@@ -764,6 +764,7 @@ We identified the salary and appointment term. If summer was mandatory in a depa
 | Graduate.Union            | Indicates if the University has a graduate student union. (Yes, No, In-progress) |
 | Graduate.Union.Source     | Links union website, when available. | 
 | Per.Month.Housing.Budget  | (Annual guaranteed salary*0.30)/12, or the 30% of the monthly pre-tax income, which is the recommended housing budget. |
+| Last.Modified             | Date modified since August 2022. |
 ---
 
 ### Citations
@@ -794,7 +795,9 @@ There are many on-going efforts to collect graduate student's salary data in the
   - [Entomology Graduate Stipends - Kirchner & Petzoldt](https://doi.org/10.1093/ae/tmac018){target="blank"}  
   - [Computer Science PhD Stipends - Jeff Huang](https://jeffhuang.com/computer-science-open-data/#:~:text=awards%20collection.-,Verified%20Computer%20Science%20Ph.D.%20Stipends,-Computer%20Science%20Stipends){target="blank"}    
   - [Verified University Minimum Stipends - University of California Strike - Liza Wood](https://liza-wood.github.io/uc-strikevote-opinion.html){target="blank"}     
-  - [Psychology Internship Stipends - Hood et al. 2022](https://psyarxiv.com/rm3bk){target="blank"}   
+  - [Psychology Internship Stipends - Hood et al. 2022](https://psyarxiv.com/rm3bk){target="blank"}
+  - [Physics Graduate Student Pay - Shinbrough & Acres, American Physical Society](https://engage.aps.org/fgsa/resources/pay-data)
+  - [MIT Graduate Student Cost of Living](https://gsc.mit.edu/committees/hca/cost-of-living/) - MIT Graduate Student Council
   
   
   
@@ -822,6 +825,7 @@ Support for this work is provided by:
   - [Dr. Kenneth Thompson](https://www.hybrid-ecology.com/){target="blank"}
   - [Dr. Byron Adams](https://biology.byu.edu/adams-lab){target="blank"}
   - [Dr. Breanna Harris](https://harrislabttu.netlify.app/){target="blank"}
+  - [Dr. Michael Landis](http://landislab.org/){target="blank"}
 
 ___
 
