@@ -144,11 +144,11 @@ Graduate students are the engine that keep scientific discovery alive. During th
 
 This dataset was initially collected for graduate stipend negotiations within the Department of Biology at the University of Florida; however, after [feedback on my tweet](https://twitter.com/ShellyGaynor/status/1511072546405425161?s=20&t=7ktxGiExZJMgQDkN3qKecQ){target="blank"}, we decided to expand this dataset via crowd-sourcing. **Add additional Universities to our dataset via our [Google Form](https://forms.gle/xTRx4UHvuhyXRNFu7){target="blank"}.** This dataset is currently incomplete and we hope it will improve with time. We hope this dataset will help others advocate for a living wage.
 
-Did your program decide to increase salaries? Update our database (and make my day) using this [Google Form](https://forms.gle/MXFa1jkzEtnb9A2x7){target="blank"}!   
+Did your program decide to increase salaries? **Update our database (and make my day) using this [Google Form](https://forms.gle/MXFa1jkzEtnb9A2x7){target="blank"}!**   
 
-We will be manually checking every submission before adding it to our main datasheet, please allow 36 - 72 hours for your entry to appear. **If you find any errors, please let us know [via our other Google Form](https://forms.gle/dzosvKsiYnQSkDhP9){target="blank"}.** A link to the full dataset can be found below.
+We manually check every submission before adding it to our main datasheet, please allow 36 - 72 hours for your entry to appear. **If you find any errors, please let us know [via our other Google Form](https://forms.gle/dzosvKsiYnQSkDhP9){target="blank"}.** A link to the full dataset can be found below.
 
-This work was recently featured in [Nature](https://www.nature.com/articles/d41586-022-01392-w){target="blank"} and [Science](https://www.science.org/content/article/ph-d-students-demand-wage-increases-amid-rising-cost-living#.YowZEgLeD54.twitter){target="blank"}. 
+This work was recently featured in [Nature](https://www.nature.com/articles/d41586-022-01392-w){target="blank"} and [Science](https://www.science.org/content/article/ph-d-students-demand-wage-increases-amid-rising-cost-living#.YowZEgLeD54.twitter){target="blank"}.   
 
 
 ___
@@ -640,7 +640,7 @@ The [PhD Stipends database](https://www.phdstipends.com/){target="blank"} has `r
 
 Here we show the mean difference between the [PhD Stipends database](https://www.phdstipends.com/){target="blank"} adjusted overall pay and our annual guaranteed salary. Positive values most likely represent summer appointments, fellowships, or other opportunities that would increase overall salaries. Negative values may represent recently increased salaries, however these may be incorrectly reported salaries or may represent master student's salary.  
 
-```{r context="render", echo=F, eval=T,  fig.align='center', out.width='75%', fig.height=8.5}
+```{r eval=T, echo=F, fig.align='center', fig.height=8.5, message=FALSE, warning=FALSE, context="render", out.width='75%'}
 ##
 # actionButton("PhDStipendsDB", "Run Analysis")
 # 
@@ -722,7 +722,9 @@ ___
 
 ## Additional Information
 
-[Our full dataset can be found here.](https://docs.google.com/spreadsheets/d/1rBOn60tBM6J2iCEbRQdH4Fb2sqCVKi90McpKwD8Tmlc/edit?usp=sharing){target="blank"} **If you find any errors, please let us know [via our other Google Form](https://forms.gle/dzosvKsiYnQSkDhP9){target="blank"}.**    
+[Our full dataset can be found here.](https://docs.google.com/spreadsheets/d/1rBOn60tBM6J2iCEbRQdH4Fb2sqCVKi90McpKwD8Tmlc/edit?usp=sharing){target="blank"} **If you find any errors, please let us know [via our other Google Form](https://forms.gle/dzosvKsiYnQSkDhP9){target="blank"}.**   
+
+**Data use:** We encourage you to use our dataset, but please cite your source by linking this site! If you use our data, work with us and make sure to let us know if you find any [errors](https://forms.gle/dzosvKsiYnQSkDhP9){target="blank"} or [updates](https://forms.gle/MXFa1jkzEtnb9A2x7){target="blank"}.   
 
 ### Media Coverage
 
@@ -783,7 +785,9 @@ This work was was inspired by Michelle Kirchner and Jane Petzoldt [publication i
 
 ### Usage
 
-We hope to submit a manuscript based on these data for publication. If you plan to use this data in research, please contact michellegaynor \@ ufl.edu.  
+If you plan to use this data in research, please contact michellegaynor \@ ufl.edu.  
+
+We encourage you to use our dataset, but please cite your source by linking this site! If you use our data, work with us and make sure to let us know if you find any [errors](https://forms.gle/dzosvKsiYnQSkDhP9){target="blank"} or [updates](https://forms.gle/MXFa1jkzEtnb9A2x7){target="blank"}.  
 
 ### Other Databases    
 
@@ -797,7 +801,7 @@ There are many on-going efforts to collect graduate student's salary data in the
   - [Verified University Minimum Stipends - University of California Strike - Liza Wood](https://liza-wood.github.io/uc-strikevote-opinion.html){target="blank"}     
   - [Psychology Internship Stipends - Hood et al. 2022](https://psyarxiv.com/rm3bk){target="blank"}
   - [Physics Graduate Student Pay - Shinbrough & Acres, American Physical Society](https://engage.aps.org/fgsa/resources/pay-data)
-  - [MIT Graduate Student Cost of Living](https://gsc.mit.edu/committees/hca/cost-of-living/) - MIT Graduate Student Council
+  - [MIT Graduate Student Cost of Living - MIT Graduate Student Council](https://gsc.mit.edu/committees/hca/cost-of-living/)   
   
   
   
