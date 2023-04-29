@@ -387,9 +387,9 @@ ___
 
 ## Salary to Living Wage
 
-Here we examine the relationship between Guaranteed Annual Salary and [MIT calculated living wage](https://livingwage.mit.edu/){target="blank"}. Some institutions have multiple stipend rates dependent on stage of student in graduate program, however, for this comparison we chose the starting salary of each program. The living wage is for a single adult with no children.
+Here we examine the relationship between Guaranteed Annual Salary and [MIT required annual income before taxes](https://livingwage.mit.edu/){target="blank"} which is part of the MIT living wage. Some institutions have multiple stipend rates dependent on stage of student in graduate program, however, for this comparison we chose the starting salary of each program. The living wage is for a single adult with no children.
 
-**Justification**: MIT living wage is an annual wage, though some students are covered for 12 months or 9 months with summer funding required, we also treat the 9 month appointments without required summer funding as annual salaries. If a student is only legally contracted for 9 months with summer funding suggested, we found that many students do not get summer funding due to limited teaching assistantships and research assistantships. Most research assistantships are dependent on research grants which are typically 3 years, while PhD's are 5-8 years. RA's often cannot be guaranteed even if the faculty member has the best intentions. If a student does not receive an RA or TA, they are often still expected/encouraged to make research progress and external jobs/work is discouraged. Additionally, international student visa's stipulate that they cannot work outside the university, so though domestic students could potentially pick up a job elsewhere, international students cannot.
+**Justification**: The MIT living annual wage, is an annual wage, though some students are covered for 12 months or 9 months with summer funding required, we also treat the 9 month appointments without required summer funding as annual salaries. If a student is only legally contracted for 9 months with summer funding suggested, we found that many students do not get summer funding due to limited teaching assistantships and research assistantships. Most research assistantships are dependent on research grants which are typically 3 years, while PhD's are 5-8 years. RA's often cannot be guaranteed even if the faculty member has the best intentions. If a student does not receive an RA or TA, they are often still expected/encouraged to make research progress and external jobs/work is discouraged. Additionally, international student visa's stipulate that they cannot work outside the university, so though domestic students could potentially pick up a job elsewhere, international students cannot.
 
 **Plot information**: The asterisk represents the 'University' selected. The black line represents a 1:1 ratio between salary and living wage. The grey line is a linear regression of all plotted points with a 95% confidence interval.
 
@@ -483,7 +483,7 @@ p=reactive({
                                                    paste0("Salary: ",`Annual guaranteed salary`), 
                                                    paste0("MIT: ", `MIT Living Wage (1 adult, 0 children)`), sep="\n"),
                                        ), size = 3) +
-      scale_shape_manual(values= pt_shps)
+      scale_shape_manual(values= pt_shps) 
   # }
   
   p = p + 
@@ -499,7 +499,8 @@ p=reactive({
     xlim(axis_min, axis_max) + 
     ylim(axis_min, axis_max) + 
     theme_bw() + 
-    theme(text = element_text(size = 20))
+    theme(text = element_text(size = 20))+
+  xlab("MIT Annual Living Wage (1 adult, 0 children)")
   
   if(input$display != "All"){
     p = p + geom_text(data=data.frame(), 
@@ -558,11 +559,11 @@ ___
 ## FAQ  
 
 ### What is MIT Living Wage?   
-A detailed  breakdown of the [MIT Living Wage calculator can be found here](https://livingwage.mit.edu/resources/Living-Wage-Users-Guide-Technical-Documentation-2022-05-10.pdf){target="blank"}.
+A detailed  breakdown of the [MIT Living Wage calculator can be found here](https://livingwage.mit.edu/pages/methodology){target="blank"}.
 
-Briefly, the **basic needs budget** equals the sum of: (1) food cost; (2) health costs, which are equal to insurance premiums plus out of pocket health care costs; (3) housing cost (based on HUD Fair Market Rents estimates); (4) transportation cost; (5) other necessities cost (*i.e.*, clothing, personal care, and housekeeping supplies); (6) civic engagement (based on the Consumer Price Index); & (7) broadband which is the cost of cell phone service and internet.
+Briefly, the **basic needs budget** (or **annual family budget** when childchare is included) equals the sum of: (1) food cost; (2) health costs, which are equal to insurance premiums plus out of pocket health care costs; (3) housing cost (based on HUD Fair Market Rents estimates); (4) transportation cost; (5) other necessities cost (*i.e.*, clothing, personal care, and housekeeping supplies); (6) civic engagement (based on the Consumer Price Index); & (7) broadband which is the cost of cell phone service and internet.
 
-The **living wage** is then equal to the basic needs budget plus tax, which is equal to simply the basic needs budget*(Federal tax rate + State tax rate).
+The **living annual wage** is then equal to thebasic needs budget (or annual family budget) plus tax, which is equal to simply the basic needs budget*(Federal tax rate + State tax rate).
 
 ### Why didn't you adjust for subsidized housing?   
 A small subset of programs have subsidizing housing available. If you are a prospective student, we suggest you consult with the programs website for any programs in high cost areas to find out more about potential subsidized housing opportunities.     
@@ -572,12 +573,12 @@ A small subset of programs have subsidizing housing available. If you are a pros
 
 Many programs provide some form of health insurance, but we decided not to modify the total health costs included in the MIT calculation.
 
-Based on the information provided regarding health costs in the [detailed  breakdown of the MIT Living Wage calculator](https://livingwage.mit.edu/resources/Living-Wage-Users-Guide-Technical-Documentation-2022-05-10.pdf){target="blank"}, it seems health insurance cost is only a chunk of the total costs in this category. For a single adult, health insurance cost is calculated at a State level, we found that this value's maximum is \$1,838 and its minimum is \$736 annually. Though deducting this cost from the basic needs budget may make a difference for programs very close to the 1:1 line between salary and living wage, we did not find this adjustment made much difference in the overall trends of the current dataset.
+Based on the information provided regarding health costs in the [detailed  breakdown of the MIT Living Wage calculator](https://livingwage.mit.edu/pages/methodology){target="blank"}, it seems health insurance cost is only a chunk of the total costs in this category. For a single adult, health insurance cost is calculated at a State level, we found that this value's maximum is \$1,838 and its minimum is \$736 annually. Though deducting this cost from the basic needs budget may make a difference for programs very close to the 1:1 line between salary and living wage, we did not find this adjustment made much difference in the overall trends of the current dataset.
 
 Additionally, many program's annual reported fees are also within the same cost range. Therefore, adding fees to the basic needs budget and deducting health insurance costs would likely result in only slight (<$1000) shifts in the total cost of living. 
 
 #### Example:  
-University of Florida, Gainesville, FL.
+University of Florida, Gainesville, FL. (as of 2022)
 
   *Basic information*
 
@@ -771,7 +772,7 @@ We identified the salary and appointment term. If summer was mandatory in a depa
 
 ### Citations
 
-Glasmeier, Amy K. Living Wage Calculator. 2020. Massachusetts Institute of Technology. livingwage.mit.edu.
+Glasmeier, Amy K. Living Wage Calculator. 2023. Massachusetts Institute of Technology. livingwage.mit.edu.
 
 ### Acknowledgments    
 
