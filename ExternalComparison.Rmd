@@ -760,7 +760,7 @@ We identified the salary and appointment term. If summer was mandatory in a depa
 | State                     | Geographic information. |
 | City                      | Geographic information. |
 | County                    | Geographic information. |
-| MIT Living Wage           | For each geographic location, we identified the current [MIT Living Wage](https://livingwage.mit.edu/){target="blank"} (as of September 2022) for a single adult with no children. |
+| MIT Living Wage           | For each geographic location, we identified the current [MIT Living Wage](https://livingwage.mit.edu/){target="blank"} (as of March 2023) for a single adult with no children. |
 | Salary/Living             | Annual guaranteed salary divided by the MIT Living Wage. | 
 | Abbreviation              | Abbreviated University name for plotting. |   
 | University_ID             | ID to control for multiple Departments per University. |
@@ -768,6 +768,7 @@ We identified the salary and appointment term. If summer was mandatory in a depa
 | Graduate.Union.Source     | Links union website, when available. | 
 | Per.Month.Housing.Budget  | (Annual guaranteed salary*0.30)/12, or the 30% of the monthly pre-tax income, which is the recommended housing budget. |
 | Last.Modified             | Date modified since August 2022. |
+
 ---
 
 ### Citations
