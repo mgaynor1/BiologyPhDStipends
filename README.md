@@ -1,7 +1,9 @@
 # BiologyPhDStipends
 <img align="right" src="BiologyPhDStipends.svg" width=200>   
 
-## Michelle L. Gaynor and Rhett M. Rautsaw     
+## Michelle L. Gaynor and Rhett M. Rautsaw 
+
+[![DOI](https://sandbox.zenodo.org/badge/573224262.svg)](https://sandbox.zenodo.org/badge/latestdoi/573224262)
 
 This repository contains the underlying code for the **BiologyPhDStipends** Shiny application hosted at [rhettrautsaw.app/shiny/BiologyPhDStipends/](https://rhettrautsaw.app/shiny/BiologyPhDStipends/).   
 
