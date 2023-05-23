@@ -832,6 +832,7 @@ Support for this work is provided by:
   - [Dr. Byron Adams](https://biology.byu.edu/adams-lab){target="blank"}
   - [Dr. Breanna Harris](https://harrislabttu.netlify.app/){target="blank"}
   - [Dr. Michael Landis](http://landislab.org/){target="blank"}
+  - [Dr. Jim Leebens-Mack](https://www.jlmlab.com/){target="blank"}
 
 ___
 
