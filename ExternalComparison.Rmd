@@ -760,7 +760,7 @@ We identified the salary and appointment term. If summer was mandatory in a depa
 | State                     | Geographic information. |
 | City                      | Geographic information. |
 | County                    | Geographic information. |
-| MIT Living Wage           | For each geographic location, we identified the current [MIT Living Wage](https://livingwage.mit.edu/){target="blank"} (as of March 2023) for a single adult with no children. |
+| MIT Living Wage           | For each geographic location, we identified the current [MIT Living Wage](https://livingwage.mit.edu/){target="blank"} (as of May 2023) for a single adult with no children. |
 | Salary/Living             | Annual guaranteed salary divided by the MIT Living Wage. | 
 | Abbreviation              | Abbreviated University name for plotting. |   
 | University_ID             | ID to control for multiple Departments per University. |
