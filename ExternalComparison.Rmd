@@ -823,7 +823,7 @@ Support for this work is provided by:
 
   - [Dr. Matthew Johnson](http://www.mossmatters.com/){target="blank"}    
   - [Dr. Ryan Martin](https://www.martinevolutionaryecologylab.com/){target="blank"}    
-  - [Marc Beer](https://marcabeer.github.io/index.html){target="blank"}    
+  - [Dr. Marc Beer](https://marcabeer.github.io/index.html){target="blank"}    
   - [Dr. Karolina Heyduk](https://www.kheyduk.net/){target="blank"}      
   - [Dr. Jessica Budke](http://jmbudke.github.io/){target="blank"}   
   - [Dr. Stuart McDaniel](https://mcdaniellab.biology.ufl.edu/){target="blank"}  
