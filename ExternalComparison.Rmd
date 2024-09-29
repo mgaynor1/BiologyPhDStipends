@@ -833,6 +833,7 @@ Support for this work is provided by:
   - [Dr. Breanna Harris](https://harrislabttu.netlify.app/){target="blank"}
   - [Dr. Michael Landis](http://landislab.org/){target="blank"}
   - [Dr. Jim Leebens-Mack](https://www.jlmlab.com/){target="blank"}
+  - [Dr. Arnaud Martin](https://www.dnacrobatics.com/){target="blank"}
 
 ___
 
