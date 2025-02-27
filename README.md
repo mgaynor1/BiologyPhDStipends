@@ -40,13 +40,20 @@ NSF conducts a Survey of Graduate Students and Postdoctorates in Science and Eng
 
 We keep a list on our app of other recent efforts to collect graduate student's salary data in the United States. Here is a subset:   
 
-  - [Medicine and Public Health - Teachers & Researchers United, Johns Hopkins University](https://docs.google.com/presentation/d/1U1WSWlAC-HUlfmuRHNRiFyJdRK3cgmcOKJS9N31YacE/edit)
-  - [English PhD Stipends in the United States](https://profession.mla.org/english-phd-stipends-in-the-united-states-statistical-report/)  
-  - [Entomology Graduate Stipends - Kirchner & Petzoldt](https://doi.org/10.1093/ae/tmac018)
-  - [Computer Science PhD Stipends - Jeff Huang](https://jeffhuang.com/computer-science-open-data/#:~:text=awards%20collection.-,Verified%20Computer%20Science%20Ph.D.%20Stipends,-Computer%20Science%20Stipends) 
-  - [Verified University Minimum Stipends - University of California Strike - Liza Wood](https://liza-wood.github.io/uc-strikevote-opinion.html)    
+- [Medicine and Public Health - Teachers & Researchers United, Johns Hopkins University](https://docs.google.com/presentation/d/1U1WSWlAC-HUlfmuRHNRiFyJdRK3cgmcOKJS9N31YacE/edit)    
+  - [English PhD Stipends in the United States](https://profession.mla.org/english-phd-stipends-in-the-united-states-statistical-report/)   
+  - [Big Ten PhD Stipend and Cost of Living - University of Maryland](https://docs.google.com/spreadsheets/d/1nJKlF2grr4zBxXxFzcoNTCuM8BI1frmreyxriroJlEo/edit?usp=sharing)   
+  - [Entomology Graduate Stipends - Kirchner & Petzoldt](https://doi.org/10.1093/ae/tmac018)  
+  - [Computer Science PhD Stipends - Jeff Huang](https://jeffhuang.com/computer-science-open-data/#:~:text=awards%20collection.-,Verified%20Computer%20Science%20Ph.D.%20Stipends,-Computer%20Science%20Stipends)
+  - [CCStipendRankings](https://csstipendrankings.org/)         
+  - [Verified University Minimum Stipends - University of California Strike - Liza Wood](https://liza-wood.github.io/uc-strikevote-opinion.html)     
   - [Psychology Internship Stipends - Hood et al. 2022](https://psyarxiv.com/rm3bk)
-  - [Physics Graduate Student Pay - Shinbrough & Acres, American Physical Society](https://engage.aps.org/fgsa/resources/pay-data). 
+  - [Physics Graduate Student Pay - Shinbrough & Acres, American Physical Society](https://engage.aps.org/fgsa/resources/pay-data)    
+  - [MIT Graduate Student Cost of Living - MIT Graduate Student Council](https://gsc.mit.edu/committees/hca/cost-of-living/)    
+  - [Political Science - Warner et al. 2024](https://doi.org/10.1177/2053168024124113)     
+  - [Canadian science graduate stipends - Fraass et al. 2024 preprint](https://www.biorxiv.org/content/10.1101/2024.11.06.622240v3)    
+  
+  
 
 # Other Resources  
 

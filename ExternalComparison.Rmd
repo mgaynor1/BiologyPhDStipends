@@ -622,7 +622,7 @@ phd <- phd %>%
         
 
 # Set years to keep
-yearskeep <- c("2022-2023", "2021-2022", "2020-2021", "2019-2020")
+yearskeep <- c("2024-2025", "2023-2024", "2022-2023", "2021-2022", "2020-2021", "2019-2020")
 departments <- unique(doc$Department)
 uni <- unique(doc$University_ID)
 
@@ -637,7 +637,7 @@ masterwords <- c('MS | M.S. | Masters | master | masters | Master | ms')
 UD <- UD[!grepl(pattern = masterwords, x = UD$Comments ), ]
 ```
 
-The [PhD Stipends database](https://www.phdstipends.com/){target="blank"} has `r if(exists("UD")){nrow(UD)}else{paste("?")}` observations for Universities and Departments included in our dataset and reported for 2019-2023. This database reports overall pay as the sum of 12 month, 9 month, and 3 month reported income minus the cost of fees. Since we do not account for fees in our dataset, we adjusted the overall pay to be equal to overall pay plus fees. 
+The [PhD Stipends database](https://www.phdstipends.com/){target="blank"} has `r if(exists("UD")){nrow(UD)}else{paste("?")}` observations for Universities and Departments included in our dataset and reported for 2019-2025. This database reports overall pay as the sum of 12 month, 9 month, and 3 month reported income minus the cost of fees. Since we do not account for fees in our dataset, we adjusted the overall pay to be equal to overall pay plus fees. 
 
 Here we show the mean difference between the [PhD Stipends database](https://www.phdstipends.com/){target="blank"} adjusted overall pay and our annual guaranteed salary. Positive values most likely represent summer appointments, fellowships, or other opportunities that would increase overall salaries. Negative values may represent recently increased salaries, however these may be incorrectly reported salaries or may represent master student's salary.  
 
@@ -736,6 +736,12 @@ ___
       - Top 5% [Altmetric Score](https://www.altmetric.com/details/128771175){target="blank"}.
 
   - "Ph.D. students demand wage increases amid rising cost of living". 05-23-2022. Science. [doi: 10.1126/science.caredit.add1421.](https://www.science.org/content/article/ph-d-students-demand-wage-increases-amid-rising-cost-living){target="blank"}   
+  
+  - "The Motivation and Strategy Behind Biology PhD Stipends". 05-15-2023. Personal Finance for PhDs Podcast with Dr. Emily Roberts, [Season 14, Episode 10.](https://pfforphds.com/the-motivation-and-strategy-behind-biology-phd-stipends/){target="blank"} 
+  
+  - "Dataset indicates most universities pay biology Ph.D. stipends below living wage". 03-24-2024. [The Crimson White.](https://thecrimsonwhite.com/113898/news/dataset-indicates-most-universities-pay-biology-ph-d-stipends-below-living-wage/){target="blank"}    
+  
+
 
 
 ### Dataset description
@@ -787,7 +793,7 @@ This work was was inspired by Michelle Kirchner and Jane Petzoldt [publication i
 
 ### Usage
 
-If you plan to use this data in research, please contact michellegaynor \@ ufl.edu.  
+If you plan to use this data in research, please contact shellyleegaynor \@ gmail.com.  
 
 We encourage you to use our dataset, but please cite your source by linking this site! If you use our data, work with us and make sure to let us know if you find any [errors](https://forms.gle/dzosvKsiYnQSkDhP9){target="blank"} or [updates](https://forms.gle/MXFa1jkzEtnb9A2x7){target="blank"}.  
 
@@ -799,11 +805,14 @@ There are many on-going efforts to collect graduate student's salary data in the
   - [English PhD Stipends in the United States](https://profession.mla.org/english-phd-stipends-in-the-united-states-statistical-report/){target="blank"}   
   - [Big Ten PhD Stipend and Cost of Living - University of Maryland](https://docs.google.com/spreadsheets/d/1nJKlF2grr4zBxXxFzcoNTCuM8BI1frmreyxriroJlEo/edit?usp=sharing){target="blank"}   
   - [Entomology Graduate Stipends - Kirchner & Petzoldt](https://doi.org/10.1093/ae/tmac018){target="blank"}  
-  - [Computer Science PhD Stipends - Jeff Huang](https://jeffhuang.com/computer-science-open-data/#:~:text=awards%20collection.-,Verified%20Computer%20Science%20Ph.D.%20Stipends,-Computer%20Science%20Stipends){target="blank"}    
+  - [Computer Science PhD Stipends - Jeff Huang](https://jeffhuang.com/computer-science-open-data/#:~:text=awards%20collection.-,Verified%20Computer%20Science%20Ph.D.%20Stipends,-Computer%20Science%20Stipends){target="blank"}
+  - [CCStipendRankings](https://csstipendrankings.org/){target="blank"}         
   - [Verified University Minimum Stipends - University of California Strike - Liza Wood](https://liza-wood.github.io/uc-strikevote-opinion.html){target="blank"}     
   - [Psychology Internship Stipends - Hood et al. 2022](https://psyarxiv.com/rm3bk){target="blank"}
-  - [Physics Graduate Student Pay - Shinbrough & Acres, American Physical Society](https://engage.aps.org/fgsa/resources/pay-data)
-  - [MIT Graduate Student Cost of Living - MIT Graduate Student Council](https://gsc.mit.edu/committees/hca/cost-of-living/)   
+  - [Physics Graduate Student Pay - Shinbrough & Acres, American Physical Society](https://engage.aps.org/fgsa/resources/pay-data){target="blank"}    
+  - [MIT Graduate Student Cost of Living - MIT Graduate Student Council](https://gsc.mit.edu/committees/hca/cost-of-living/){target="blank"}    
+  - [Political Science - Warner et al. 2024](https://doi.org/10.1177/2053168024124113){target="blank"}     
+  - [Canadian science graduate stipends - Fraass et al. 2024 preprint](https://www.biorxiv.org/content/10.1101/2024.11.06.622240v3){target="blank"}    
   
   
   
