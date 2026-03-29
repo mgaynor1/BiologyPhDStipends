@@ -1,0 +1,3392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Biology PhD Stipends</title>
+  <meta name="description" content="Biology Ph.D. stipend database with live summaries from the shared Google Sheet.">
+  <style>
+    :root {
+      --bg: #f7fbff;
+      --panel: #fff;
+      --ink: #1e1a17;
+      --muted: #5e6f86;
+      --line: #d7e3f0;
+      --accent: #1f4ea3;
+      --accent-soft: #d8e7ff;
+      --accent-deep: #14366f;
+      --shadow: 0 14px 40px rgba(63, 27, 18, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(31, 78, 163, 0.10), transparent 34%),
+        linear-gradient(180deg, #f3f8ff 0%, var(--bg) 32%, #fff 100%);
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 4rem;
+    }
+
+    .hero {
+      padding: 1.75rem 0 1rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.65rem;
+      padding: 1rem 0 0.25rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: #f5f9ff;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 0.6rem 1rem;
+      font: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+    }
+
+    .tab-button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.5rem;
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.4rem, 5vw, 4.5rem);
+      line-height: 0.98;
+      font-weight: 700;
+    }
+
+    .byline {
+      margin: 1rem 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.5rem;
+      padding: 1.5rem 0 2rem;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(4px);
+    }
+
+    .intro-copy {
+      padding: 1.5rem 1.6rem;
+    }
+
+    .intro-copy h2,
+    .visuals h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1.55rem;
+    }
+
+    .intro-copy p {
+      margin: 0 0 1rem;
+    }
+
+    .stats {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      align-self: start;
+    }
+
+    .stat-group {
+      display: grid;
+      gap: 0.65rem;
+      padding: 0.9rem;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #f6faff 0%, #fff 100%);
+      border: 1px solid var(--line);
+    }
+
+    .stat-group-title {
+      margin: 0;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    .stat-grid.stat-grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .stat {
+      padding: 0.15rem 0;
+    }
+
+    .stat-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+      font-size: clamp(1.25rem, 2.1vw, 1.85rem);
+      line-height: 1.1;
+      font-weight: 700;
+    }
+
+    .status {
+      font-size: 0.95rem;
+      color: var(--muted);
+      padding: 0.85rem 1rem;
+      border-radius: 14px;
+      background: #f5f9ff;
+      border: 1px dashed var(--line);
+    }
+
+    .visuals {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .small-multiples {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fffaf8 0%, #fff 100%);
+      padding: 1rem;
+    }
+
+    .mini-card h3 {
+      margin: 0 0 0.8rem;
+      font-size: 1rem;
+    }
+
+    .mini-chart {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(140px, 1.1fr) minmax(0, 2fr) auto;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .bar-label {
+      font-size: 0.92rem;
+      color: var(--ink);
+      overflow-wrap: anywhere;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 14px;
+      background: #dde9f8;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #8bb3f3 0%, #1f4ea3 100%);
+    }
+
+    .bar-value {
+      font-variant-numeric: tabular-nums;
+      font-size: 0.9rem;
+      color: var(--muted);
+      min-width: 1.8rem;
+      text-align: right;
+    }
+
+    .mini-empty {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .viz-panel {
+      padding: 1.25rem 1.25rem 1.4rem;
+    }
+
+    .viz-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1rem;
+    }
+
+    .viz-header p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 48rem;
+    }
+
+    .salary-chart-panel .viz-header p,
+    .salary-filter-panel .viz-header p,
+    .salary-controls .salary-note {
+      max-width: none;
+    }
+
+    .viz-frame {
+      width: 100%;
+      min-height: 360px;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(241, 247, 255, 0.95), rgba(255, 255, 255, 0.95));
+      border: 1px solid #dfe9f5;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #wordcloud {
+      min-height: 440px;
+    }
+
+    #us-map {
+      min-height: 440px;
+    }
+
+    .tooltip {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+      background: rgba(34, 22, 19, 0.95);
+      color: #fff;
+      padding: 0.6rem 0.75rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      line-height: 1.35;
+      opacity: 0;
+      transform: translate(-50%, calc(-100% - 10px));
+      transition: opacity 120ms ease;
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      font-size: 0.95rem;
+      display: grid;
+      place-items: center;
+      min-height: 100%;
+    }
+
+    .cloud-wrap {
+      min-height: 440px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cloud-wrap canvas {
+      display: block;
+      width: 100%;
+      height: 440px;
+    }
+
+    .cloud-fallback {
+      min-height: 440px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+    }
+
+    .salary-shell {
+      display: grid;
+      gap: 1.5rem;
+      padding-top: 1.5rem;
+    }
+
+    .salary-top {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .salary-controls,
+    .salary-summary {
+      padding: 1.25rem;
+    }
+
+    .control-row {
+      display: grid;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+    }
+
+    .control-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .control-row label {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .control-row select {
+      width: 100%;
+      padding: 0.7rem 0.8rem;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font: inherit;
+      color: var(--ink);
+    }
+
+    .control-row input[type="search"] {
+      width: 100%;
+      padding: 0.7rem 0.8rem;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font: inherit;
+      color: var(--ink);
+    }
+
+    .control-row input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .segmented {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .segmented input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .segmented label {
+      padding: 0.7rem 0.85rem;
+      text-align: center;
+      font-size: 0.92rem;
+      cursor: pointer;
+      color: var(--muted);
+      background: #fff;
+      transition: background 120ms ease, color 120ms ease;
+    }
+
+    .segmented input:checked + label {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .salary-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .salary-metric {
+      padding: 0.9rem;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #f7fbff 0%, #fff 100%);
+      border: 1px solid var(--line);
+    }
+
+    .salary-metric-title {
+      display: block;
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .salary-metric-value {
+      display: block;
+      font-size: 1.35rem;
+      line-height: 1.1;
+      font-weight: 700;
+    }
+
+    .salary-metric-sub {
+      margin-top: 0.8rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .salary-metric-sub .salary-metric-title {
+      margin-bottom: 0.18rem;
+      font-size: 0.8rem;
+    }
+
+    .salary-metric-sub .salary-metric-value {
+      font-size: 1.02rem;
+    }
+
+    .text-page {
+      padding-top: 1.5rem;
+    }
+
+    .text-stack {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .text-panel {
+      padding: 1.35rem 1.4rem;
+    }
+
+    .text-panel h2,
+    .text-panel h3 {
+      margin: 0 0 0.7rem;
+    }
+
+    .text-panel p {
+      margin: 0 0 0.9rem;
+    }
+
+    .text-panel p:last-child {
+      margin-bottom: 0;
+    }
+
+    .text-panel ul {
+      margin: 0.2rem 0 0;
+      padding-left: 1.25rem;
+    }
+
+    .text-panel li + li {
+      margin-top: 0.45rem;
+    }
+
+    .support-button {
+      display: inline-block;
+      padding: 0.7rem 1rem;
+      border-radius: 12px;
+      background: #f77f00;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      border: 1px solid #d76c00;
+    }
+
+    .dataset-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    .dataset-table th,
+    .dataset-table td {
+      padding: 0.72rem 0.75rem;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .dataset-table th {
+      color: var(--accent);
+      font-size: 0.84rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .faq-comparison {
+      display: grid;
+      gap: 0.4rem;
+      padding: 0.8rem;
+      min-width: 900px;
+    }
+
+    .faq-comparison-header,
+    .faq-comparison-row {
+      display: grid;
+      grid-template-columns: minmax(220px, 1.25fr) minmax(420px, 2fr) 96px;
+      gap: 0.9rem;
+      align-items: center;
+    }
+
+    .faq-comparison-header {
+      padding: 0 0 0.35rem;
+      border-bottom: 1px solid var(--line);
+      color: var(--accent);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .faq-comparison-row {
+      min-height: 24px;
+    }
+
+    .faq-comparison-label {
+      font-size: 0.82rem;
+      line-height: 1.2;
+      color: var(--ink);
+      overflow-wrap: anywhere;
+    }
+
+    .faq-comparison-value {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .faq-comparison-track {
+      position: relative;
+      height: 18px;
+      background: #edf3fb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .faq-comparison-zero {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #14366f;
+      transform: translateX(-1px);
+    }
+
+    .faq-comparison-bar {
+      position: absolute;
+      top: 2px;
+      bottom: 2px;
+      border-radius: 999px;
+    }
+
+    .faq-comparison-bar.positive {
+      background: #1f4ea3;
+    }
+
+    .faq-comparison-bar.negative {
+      background: #cc4b48;
+    }
+
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 0.9rem;
+    }
+
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .legend-line {
+      width: 30px;
+      height: 0;
+      border-top-width: 3px;
+      border-top-style: solid;
+      display: inline-block;
+    }
+
+    .legend-line.dotted {
+      border-top-style: dashed;
+      border-top-width: 4px;
+    }
+
+    .salary-chart-panel {
+      padding: 1.25rem;
+    }
+
+    .salary-filter-panel,
+    .salary-encoding-panel {
+      padding: 1.25rem;
+    }
+
+    .filter-top {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .scatter-controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      align-content: start;
+    }
+
+    .encoding-matrix {
+      display: grid;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .encoding-head,
+    .encoding-row {
+      display: grid;
+      grid-template-columns: minmax(170px, 1.2fr) 110px 110px;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .encoding-head {
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .encoding-cell {
+      font-size: 0.92rem;
+      color: var(--ink);
+    }
+
+    .encoding-check {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .encoding-check input {
+      accent-color: var(--accent);
+    }
+
+    .scatter-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .scatter-stat {
+      padding: 0.8rem 0.9rem;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #f7fbff 0%, #fff 100%);
+      border: 1px solid var(--line);
+    }
+
+    .scatter-stat-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .scatter-stat-value {
+      display: block;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    #salary-histogram {
+      width: 100%;
+      min-height: 470px;
+    }
+
+    #salary-scatter {
+      width: 100%;
+      min-height: 640px;
+      aspect-ratio: 1 / 1;
+    }
+
+    .salary-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .post-chart-summary {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .legend-stack {
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .legend-title {
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .encoding-layout {
+      display: grid;
+      grid-template-columns: minmax(360px, 1.15fr) minmax(260px, 0.85fr);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .shape-swatch {
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      position: relative;
+    }
+
+    .shape-swatch.circle {
+      border-radius: 999px;
+      background: #1f4ea3;
+    }
+
+    .shape-swatch.square {
+      background: #1f4ea3;
+    }
+
+    .shape-swatch.triangle {
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 12px solid #1f4ea3;
+    }
+
+    .shape-swatch.diamond {
+      background: #1f4ea3;
+      transform: rotate(45deg);
+      width: 10px;
+      height: 10px;
+      margin: 1px;
+    }
+
+    .shape-swatch.plus::before,
+    .shape-swatch.plus::after {
+      content: "";
+      position: absolute;
+      background: #1f4ea3;
+      left: 5px;
+      top: 0;
+      width: 2px;
+      height: 12px;
+    }
+
+    .shape-swatch.plus::after {
+      left: 0;
+      top: 5px;
+      width: 12px;
+      height: 2px;
+    }
+
+    .shape-swatch.triangle-down {
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 12px solid #1f4ea3;
+    }
+
+    .scatter-tooltip {
+      position: absolute;
+      z-index: 6;
+      pointer-events: none;
+      opacity: 0;
+      background: rgba(20, 32, 54, 0.96);
+      color: #fff;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      line-height: 1.35;
+      transform: translate(-50%, calc(-100% - 10px));
+      transition: opacity 120ms ease;
+      max-width: 320px;
+      min-width: 220px;
+      white-space: normal;
+    }
+
+    .salary-profile {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0.45rem;
+    }
+
+    .profile-item {
+      padding: 0.55rem 0.6rem;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #fffaf8 0%, #fff 100%);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      transition: background 120ms ease, border-color 120ms ease, color 120ms ease, transform 120ms ease;
+      min-width: 0;
+    }
+
+    .profile-item:hover {
+      transform: translateY(-1px);
+    }
+
+    .profile-item.active {
+      background: linear-gradient(180deg, #d9e7ff 0%, #eff5ff 100%);
+      border-color: #4b77c8;
+      box-shadow: inset 0 0 0 1px rgba(31, 78, 163, 0.10);
+    }
+
+    .profile-label {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--muted);
+      font-size: 0.74rem;
+      margin-bottom: 0.15rem;
+      line-height: 1.15;
+    }
+
+    .profile-value {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 700;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+
+    .filter-grid {
+      display: grid;
+      gap: 0.5rem;
+      margin-top: 0.9rem;
+    }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      font-size: 0.92rem;
+      color: var(--ink);
+    }
+
+    .filter-row input[type="checkbox"] {
+      accent-color: var(--accent);
+    }
+
+    .filter-meta {
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .info-bubble {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 1px solid #7ea3dc;
+      background: #eef5ff;
+      color: var(--accent);
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: help;
+      flex: 0 0 auto;
+    }
+
+    .info-bubble-text {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      transform: translateX(-50%);
+      width: 250px;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      background: rgba(20, 32, 54, 0.97);
+      color: #fff;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      opacity: 0;
+      pointer-events: auto;
+      transition: opacity 120ms ease;
+      z-index: 8;
+      text-transform: none;
+      letter-spacing: normal;
+      font-weight: 400;
+      white-space: normal;
+      box-shadow: 0 10px 24px rgba(20, 32, 54, 0.22);
+    }
+
+    .info-bubble:hover .info-bubble-text,
+    .info-bubble:focus-visible .info-bubble-text,
+    .info-bubble-text:hover,
+    .info-bubble-text:focus-within {
+      opacity: 1;
+    }
+
+    .info-bubble-text a {
+      color: #cfe3ff;
+    }
+
+    .footer-note {
+      margin-top: 0.15rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 860px) {
+      .intro {
+        grid-template-columns: 1fr;
+      }
+
+      .viz-header {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .small-multiples {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        gap: 0.75rem;
+      }
+
+      .stat-grid,
+      .stat-grid.stat-grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .visuals {
+        grid-template-columns: 1fr;
+      }
+
+      .salary-top {
+        grid-template-columns: 1fr;
+      }
+
+      .salary-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .encoding-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-top {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .scatter-controls,
+      .scatter-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .encoding-head,
+      .encoding-row {
+        grid-template-columns: minmax(120px, 1fr) 76px 76px;
+        gap: 0.45rem;
+      }
+
+      .bar-row {
+        grid-template-columns: 1fr;
+        gap: 0.35rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">Live Dashboard</p>
+      <h1>Biology PhD Stipends</h1>
+      <p class="byline">
+        Michelle L. Gaynor and Rhett M. Rautsaw.
+        <a href="https://bsky.app/profile/shellygaynor.bsky.social" target="_blank" rel="noreferrer">@ShellyGaynor</a>
+        and
+        <a href="https://bsky.app/profile/reptilerhett.bsky.social" target="_blank" rel="noreferrer">@ReptileRhett</a>.
+      </p>
+    </section>
+
+    <nav class="tabs" aria-label="Page sections">
+      <button class="tab-button active" type="button" data-tab="overview">Overview</button>
+      <button class="tab-button" type="button" data-tab="salaries">Salaries</button>
+      <button class="tab-button" type="button" data-tab="faq">FAQ</button>
+      <button class="tab-button" type="button" data-tab="additional">Additional Information</button>
+      <button class="tab-button" type="button" data-tab="support">Support</button>
+    </nav>
+
+    <section class="tab-panel active" id="tab-overview">
+      <section class="intro">
+        <article class="panel intro-copy">
+        <h2>Introduction</h2>
+        <p>
+          Graduate students are the engine that keep scientific discovery alive. During the duration of
+          their graduate program, students typically work as research or teaching assistants and therefore
+          compensated with tuition remission and a salary. These salaries are often insufficient to support
+          an individual; many students are only able to survive because of family or spouse assistance,
+          secondary sources of income (prohibited on most RA/TA contracts and for international students),
+          fellowships, or going into debt.
+        </p>
+        <p>
+          This dataset was initially collected for graduate stipend negotiations within the Department of
+          Biology at the University of Florida; however, after
+          <a href="https://twitter.com/ShellyGaynor/status/1511072546405425161?s=20&t=7ktxGiExZJMgQDkN3qKecQ" target="_blank" rel="noreferrer">feedback on my tweet</a>,
+          we decided to expand this dataset via crowd-sourcing.
+          <strong>Add additional Universities to our dataset via our <a href="https://forms.gle/xTRx4UHvuhyXRNFu7" target="_blank" rel="noreferrer">Google Form</a>.</strong>
+          This dataset is currently incomplete and we hope it will improve with time. We hope this dataset
+          will help others advocate for a living wage.
+        </p>
+        <p>
+          Did your program decide to increase salaries?
+          <strong>Update our database (and make my day) using this
+          <a href="https://forms.gle/MXFa1jkzEtnb9A2x7" target="_blank" rel="noreferrer">Google Form</a>.</strong>
+        </p>
+        <p>
+          We manually check every submission before adding it to our main datasheet, please allow 36 - 72 hours
+          for your entry to appear.
+          <strong>If you find any errors, please let us know
+          <a href="https://forms.gle/dzosvKsiYnQSkDhP9" target="_blank" rel="noreferrer">via our other Google Form</a>.</strong>
+          A link to the full dataset can be found below.
+        </p>
+        <p>
+          This work was recently featured in
+          <a href="https://www.nature.com/articles/d41586-022-01392-w" target="_blank" rel="noreferrer">Nature</a>
+          and
+          <a href="https://www.science.org/content/article/ph-d-students-demand-wage-increases-amid-rising-cost-living#.YowZEgLeD54.twitter" target="_blank" rel="noreferrer">Science</a>.
+        </p>
+        </article>
+
+        <aside class="panel stats" aria-label="Live dataset summary">
+        <div class="status" id="status">Loading the latest entries from the Google Sheet...</div>
+        <div class="stat-group">
+          <p class="stat-group-title">Dataset</p>
+          <div class="stat-grid">
+            <div class="stat">
+              <span class="stat-label">Entries</span>
+              <span class="stat-value" id="entries-count">-</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Latest modified</span>
+              <span class="stat-value" id="last-updated">-</span>
+            </div>
+          </div>
+        </div>
+        <div class="stat-group">
+          <p class="stat-group-title">Institutions</p>
+          <div class="stat-grid">
+            <div class="stat">
+              <span class="stat-label">Universities</span>
+              <span class="stat-value" id="universities-count">-</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Departments</span>
+              <span class="stat-value" id="departments-count">-</span>
+            </div>
+          </div>
+        </div>
+        <div class="stat-group">
+          <p class="stat-group-title">Geography</p>
+          <div class="stat-grid stat-grid-3">
+            <div class="stat">
+              <span class="stat-label">States</span>
+              <span class="stat-value" id="states-count">-</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Cities</span>
+              <span class="stat-value" id="cities-count">-</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Counties</span>
+              <span class="stat-value" id="counties-count">-</span>
+            </div>
+          </div>
+        </div>
+        <div class="footer-note">
+          Live source:
+          <a href="https://docs.google.com/spreadsheets/d/1rBOn60tBM6J2iCEbRQdH4Fb2sqCVKi90McpKwD8Tmlc/edit?usp=sharing" target="_blank" rel="noreferrer">Google Sheet</a>
+        </div>
+        </aside>
+      </section>
+
+      <section class="visuals">
+        <article class="panel viz-panel">
+        <div class="viz-header">
+          <div>
+            <h2>Department Word Cloud</h2>
+            <p>Each department name is sized by how many times it appears in the live sheet.</p>
+          </div>
+        </div>
+        <div class="viz-frame">
+          <div id="wordcloud"></div>
+          <div class="tooltip" id="wordcloud-tooltip"></div>
+        </div>
+        </article>
+
+        <article class="panel viz-panel">
+        <div class="viz-header">
+          <div>
+            <h2>Entries by State</h2>
+            <p>The map shades states from light red to dark red based on the number of sheet entries.</p>
+          </div>
+        </div>
+        <div class="viz-frame">
+          <div id="us-map"></div>
+          <div class="tooltip" id="map-tooltip"></div>
+        </div>
+        </article>
+
+        <article class="panel viz-panel full-width">
+        <div class="viz-header">
+          <div>
+            <h2>Universities by Category</h2>
+            <p>Each mini-chart shows the number of unique universities represented in each category value.</p>
+          </div>
+        </div>
+        <div class="small-multiples" id="category-charts"></div>
+        </article>
+      </section>
+    </section>
+
+    <section class="tab-panel" id="tab-salaries">
+      <section class="salary-shell">
+        <div class="salary-top">
+          <article class="panel salary-controls">
+            <h2>Salary Distribution</h2>
+            <p class="salary-note">Compare annual guaranteed salaries to MIT living wage values from the live sheet, then place a selected university on the same spectrum.</p>
+            <div class="control-row">
+              <label for="university-select">University</label>
+              <input id="university-select" list="university-options" placeholder="Search for a university" type="search">
+              <datalist id="university-options"></datalist>
+            </div>
+            <div class="control-row">
+              <label>Display mode</label>
+              <div class="segmented">
+                <input checked id="mode-salary" name="salary-mode" type="radio" value="salary">
+                <label for="mode-salary">Salary</label>
+                <input id="mode-ratio" name="salary-mode" type="radio" value="ratio">
+                <label for="mode-ratio">Salary/Living</label>
+              </div>
+            </div>
+            <div class="control-row">
+              <label for="bin-count">Histogram bins: <span id="bin-count-value">14</span></label>
+              <input id="bin-count" max="30" min="6" step="1" type="range" value="14">
+            </div>
+          </article>
+          <article class="panel salary-filter-panel">
+            <div class="viz-header">
+              <div>
+                <h2>Filters</h2>
+                <p>Click any selected-university category below to turn that matching filter on or off.</p>
+              </div>
+            </div>
+            <div class="salary-profile">
+              <div class="profile-grid" id="selected-profile"></div>
+              <div class="filter-grid">
+                <label class="filter-row">
+                  <input id="filter-all-similar" type="checkbox">
+                  <span>Turn all category filters on</span>
+                </label>
+                <div class="filter-meta">Active filters limit both salary plots to universities with matching category values.</div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <article class="panel salary-chart-panel">
+          <div class="viz-header">
+            <div>
+              <h2>Distribution</h2>
+              <p id="salary-chart-description">Both distributions are binned on the same dollar scale, with dashed lines for means and a solid blue marker for the selected university.</p>
+            </div>
+          </div>
+          <div class="viz-frame">
+            <div id="salary-histogram"></div>
+          </div>
+          <div class="post-chart-summary">
+            <div class="salary-metrics">
+              <div class="salary-metric">
+                <span class="salary-metric-title" id="salary-mean-label">Mean annual salary</span>
+                <span class="salary-metric-value" id="salary-mean">-</span>
+                <div class="salary-metric-sub">
+                  <span class="salary-metric-title" id="selected-value-label">Selected university salary</span>
+                  <span class="salary-metric-value" id="selected-salary">-</span>
+                </div>
+              </div>
+              <div class="salary-metric">
+                <span class="salary-metric-title" id="living-mean-label">Mean MIT living wage</span>
+                <span class="salary-metric-value" id="living-mean">-</span>
+                <div class="salary-metric-sub">
+                  <span class="salary-metric-title" id="selected-living-label">Selected university MIT living wage</span>
+                  <span class="salary-metric-value" id="selected-living">-</span>
+                </div>
+              </div>
+            </div>
+            <div class="legend-row">
+              <span class="legend-chip"><span class="legend-line" id="legend-primary" style="border-top-color:#1f4ea3;"></span><span id="legend-primary-text">Annual guaranteed salary</span></span>
+              <span class="legend-chip"><span class="legend-line dotted" id="legend-secondary" style="border-top-color:#8bb3f3;"></span><span id="legend-secondary-text">MIT living wage</span></span>
+              <span class="legend-chip"><span class="legend-line" style="border-top-color:#f77f00;"></span>Selected university salary</span>
+              <span class="legend-chip"><span class="legend-line dotted" style="border-top-color:#f4a261;"></span>Selected university MIT living wage</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel salary-chart-panel">
+          <div class="viz-header">
+            <div>
+              <h2>Salary to Living Wage</h2>
+              <p>Here we examine the relationship between guaranteed annual salary and <a href="https://livingwage.mit.edu/" target="_blank" rel="noreferrer">MIT required annual income before taxes</a>, which is part of the MIT living wage. Some institutions have multiple stipend rates depending on stage in the program, but for this comparison the starting salary is used. The living wage shown is for a single adult with no children.</p>
+              <p><strong>Justification:</strong> The MIT living wage is annual, and this dashboard also treats annual guaranteed salary as annual even when the appointment term is 9 months. If a program is only legally contracted for 9 months and summer funding is not guaranteed, many students may still be expected to continue research while outside work is discouraged, and international student visa rules can further limit outside employment.</p>
+              <p><strong>Plot information:</strong> The selected university is highlighted with a gold star. The dashed diagonal is the 1:1 ratio between salary and living wage, and the dark regression line summarizes the filtered points currently shown.</p>
+              <p><strong>Navigating the plot:</strong> Use the mouse wheel or trackpad to zoom and drag to pan. Double click to reset the view.</p>
+            </div>
+          </div>
+          <div class="panel salary-encoding-panel" style="margin-top: 1rem;">
+            <div class="encoding-layout">
+              <div class="encoding-matrix">
+                <div class="encoding-head">
+                  <div>Category</div>
+                  <div>Color</div>
+                  <div>Shape</div>
+                </div>
+                <div class="encoding-row">
+                  <div class="encoding-cell">Appointment term</div>
+                  <label class="encoding-check"><input class="scatter-encode" data-field="Appointment term" data-role="color" type="checkbox"></label>
+                  <label class="encoding-check"><input class="scatter-encode" data-field="Appointment term" data-role="shape" type="checkbox"></label>
+                </div>
+                <div class="encoding-row">
+                  <div class="encoding-cell">Carnegie Classification</div>
+                  <label class="encoding-check"><input class="scatter-encode" data-field="Carnegie Classification" data-role="color" type="checkbox"></label>
+                  <label class="encoding-check"><input class="scatter-encode" data-field="Carnegie Classification" data-role="shape" type="checkbox"></label>
+                </div>
+                <div class="encoding-row">
+                  <div class="encoding-cell">AAU</div>
+                <label class="encoding-check"><input checked class="scatter-encode" data-field="AAU" data-role="color" type="checkbox"></label>
+                  <label class="encoding-check"><input class="scatter-encode" data-field="AAU" data-role="shape" type="checkbox"></label>
+                </div>
+                <div class="encoding-row">
+                  <div class="encoding-cell">Land Grant</div>
+                  <label class="encoding-check"><input class="scatter-encode" data-field="Land Grant" data-role="color" type="checkbox"></label>
+                <label class="encoding-check"><input checked class="scatter-encode" data-field="Land Grant" data-role="shape" type="checkbox"></label>
+                </div>
+                <div class="encoding-row">
+                  <div class="encoding-cell">Public</div>
+                  <label class="encoding-check"><input class="scatter-encode" data-field="Public" data-role="color" type="checkbox"></label>
+                <label class="encoding-check"><input checked class="scatter-encode" data-field="Public" data-role="shape" type="checkbox"></label>
+                </div>
+                <div class="encoding-row">
+                  <div class="encoding-cell">Graduate Union</div>
+                  <label class="encoding-check"><input class="scatter-encode" data-field="Graduate.Union" data-role="color" type="checkbox"></label>
+                  <label class="encoding-check"><input class="scatter-encode" data-field="Graduate.Union" data-role="shape" type="checkbox"></label>
+                </div>
+              </div>
+              <div class="legend-stack">
+                <div>
+                  <div class="legend-title">Color Legend</div>
+                  <div class="legend-row" id="scatter-color-legend"></div>
+                </div>
+                <div>
+                  <div class="legend-title">Shape Legend</div>
+                  <div class="legend-row" id="scatter-shape-legend"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="viz-frame" style="margin-top: 1rem;">
+            <div id="salary-scatter"></div>
+            <div class="scatter-tooltip" id="scatter-tooltip"></div>
+          </div>
+          <div class="scatter-stats">
+            <div class="scatter-stat">
+              <span class="scatter-stat-label">Slope</span>
+              <span class="scatter-stat-value" id="scatter-slope">-</span>
+            </div>
+            <div class="scatter-stat">
+              <span class="scatter-stat-label">R²</span>
+              <span class="scatter-stat-value" id="scatter-r2">-</span>
+            </div>
+            <div class="scatter-stat">
+              <span class="scatter-stat-label">p-value</span>
+              <span class="scatter-stat-value" id="scatter-p">-</span>
+            </div>
+            <div class="scatter-stat">
+              <span class="scatter-stat-label">Filtered points</span>
+              <span class="scatter-stat-value" id="scatter-n">-</span>
+            </div>
+          </div>
+        </article>
+      </section>
+    </section>
+
+    <section class="tab-panel" id="tab-faq">
+      <section class="text-page">
+        <div class="text-stack">
+          <article class="panel text-panel">
+            <h3>What is MIT Living Wage?</h3>
+            <p>A detailed breakdown of the <a href="https://livingwage.mit.edu/pages/methodology" target="_blank" rel="noreferrer">MIT Living Wage calculator</a> can be found here.</p>
+            <p>Briefly, the <strong> basic needs budget</strong> (or <strong>annual family budget</strong> when childchare is included) equals the sum of: (1) food cost; (2) health costs, which are equal to insurance premiums plus out of pocket health care costs; (3) housing cost (based on HUD Fair Market Rents estimates); (4) transportation cost; (5) other necessities cost (i.e., clothing, personal care, and housekeeping supplies); (6) civic engagement (based on the Consumer Price Index); & (7) broadband which is the cost of cell phone service and internet.</p>
+            <p>The <strong>living annual wage</strong> is then equal to the basic needs budget (or annual family budget) plus tax, which is equal to simply the basic needs budget*(Federal tax rate + State tax rate).</p>
+          </article>
+
+          <article class="panel text-panel">
+            <h3>Why didn&apos;t you adjust for subsidized housing?</h3>
+            <p>A small subset of programs have subsidized housing available. If you are a prospective student, we suggest checking program websites for high-cost areas to learn more about potential subsidized housing opportunities.</p>
+          </article>
+
+          <article class="panel text-panel">
+            <h3>Why didn&apos;t you deduct health insurance costs from the MIT estimates?</h3>
+            <p>Many programs provide some form of health insurance, but we decided not to modify the total health costs included in the MIT calculation.</p>
+            <p>Based on the information provided regarding health costs in <a href="https://livingwage.mit.edu/pages/methodology" target="_blank" rel="noreferrer">the detailed breakdown of the MIT Living Wage calculator</a>, it seems health insurance cost is only a chunk of the total costs in this category. For a single adult, health insurance cost is calculated at a State level, we found that this value's maximum is $1,838 and its minimum is $736 annually. Though deducting this cost from the basic needs budget may make a difference for programs very close to the 1:1 line between salary and living wage, we did not find this adjustment made much difference in the overall trends of the current dataset.</p>
+            <p>Additionally, many program's annual reported fees are also within the same cost range. Therefore, adding fees to the basic needs budget and deducting health insurance costs would likely result in only slight (<$1000) shifts in the total cost of living.</p>
+            
+            <h3>Example:</h3>
+            <p>University of Florida, Gainesville, FL (as of 2022)</p>
+            <p><strong>Basic information</strong></p>
+            <pre>
+            Annual Salary: $18,650
+            MIT Basic Needs Budget: $27,664
+            Taxes: $4,485
+            Living Wage: $32,148
+            Salary/Living: 0.580 
+            </pre>
+
+            <p><strong>Adjustment calculation</strong></p>
+            <pre>
+            MIT Health Insurance Cost: $1,581.36
+            Annual Fees (tuition fees, health insurance deduction): $1,165.28
+            Calculated Adjustment: $416.08
+            </pre>
+            
+            <p><strong>Final adjustment</strong></p>
+            <pre>
+            Adjusted MIT Basic Needs Budget: $27,248
+            Adjusted Taxes: $4,417.56
+            Adjusted Living Wage: $31,665.56
+            Adjusted Salary/Living: 0.588
+            </pre>
+          </article>
+
+          <article class="panel text-panel">
+            <h3>How do the data collected here compare to the PhD Stipends database?</h3>
+            <p>The <a href="https://www.phdstipends.com/" target="_blank" rel="noreferrer">PhD Stipends database</a> has 564 observations for Universities and Departments included in our dataset and reported for 2019-2025. This database reports overall pay as the sum of 12 month, 9 month, and 3 month reported income minus the cost of fees. Since we do not account for fees in our dataset, we adjusted the overall pay to be equal to overall pay plus fees.</p>
+            <p>Here we show the mean difference between the <a href="https://www.phdstipends.com/" target="_blank" rel="noreferrer">PhD Stipends database</a> adjusted overall pay and our annual guaranteed salary. Positive values most likely represent summer appointments, fellowships, or other opportunities that would increase overall salaries. Negative values may represent recently increased salaries, however these may be incorrectly reported salaries or may represent master student's salary.</p>
+            <div class="control-row" style="margin-top: 1rem; max-width: 28rem;">
+              <label for="faq-phd-filter">Filter by university</label>
+              <input id="faq-phd-filter" placeholder="Type a university name" type="search">
+            </div>
+            <div class="viz-frame" style="margin-top: 1rem; min-height: 720px; overflow: auto;">
+              <div id="faq-phd-comparison"></div>
+            </div>
+          </article>
+
+          <article class="panel text-panel">
+            <h3>How far is our salary from the MIT Living Wage?</h3>
+            <p>Here we show the dollar distance between annual guaranteed salary and MIT Living Wage for each university-department entry in the current dataset. Positive values indicate salary above living wage; negative values indicate salary below living wage.</p>
+            <div class="control-row" style="margin-top: 1rem; max-width: 28rem;">
+              <label for="faq-living-filter">Filter by university</label>
+              <input id="faq-living-filter" placeholder="Type a university name" type="search">
+            </div>
+            <div class="viz-frame" style="margin-top: 1rem; min-height: 720px; overflow: auto;">
+              <div id="faq-living-distance"></div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <section class="tab-panel" id="tab-additional">
+      <section class="text-page">
+        <div class="text-stack">
+          <article class="panel text-panel">
+            <h2>Additional Information</h2>
+            <p><a href="https://docs.google.com/spreadsheets/d/1rBOn60tBM6J2iCEbRQdH4Fb2sqCVKi90McpKwD8Tmlc/edit?usp=sharing" target="_blank" rel="noreferrer">Our full dataset can be found here.</a> If you find any errors, please let us know <a href="https://forms.gle/dzosvKsiYnQSkDhP9" target="_blank" rel="noreferrer">via this form</a>.</p>
+            <p><strong>Data use:</strong> We encourage you to use our dataset, but please cite your source by linking this site! If you use our data, work with us and make sure to let us know if you find any <a href="https://forms.gle/dzosvKsiYnQSkDhP9" target="_blank" rel="noreferrer">errors</a> or <a href="https://forms.gle/MXFa1jkzEtnb9A2x7" target="_blank" rel="noreferrer">updates</a>.</p>
+          </article>
+
+          <article class="panel text-panel">
+            <h3>Media Coverage</h3>
+            <ul>
+              <li>&quot;The scandal of researchers paid less than a living wage&quot;. 11-02-2022. Nature, 611: 8. <a href="https://doi.org/10.1038/d41586-022-03472-3" target="_blank" rel="noreferrer">doi: 10.1038/d41586-022-03472-3</a></li>
+              <li>&quot;PhD students face cash crisis with wages that don’t cover living costs&quot;. 05-23-2022. Nature, 605: 775-777. <a href="https://www.nature.com/articles/d41586-022-01392-w" target="_blank" rel="noreferrer">doi:10.1038/d41586-022-01392-w</a></li>
+                <ul>
+                    <li><a href="https://www.altmetric.com/details/128771175" target="_blank" rel="nonreferrer">Top 5% Altmetric Score.</a></li>
+                </ul>
+              <li>&quot;Ph.D. students demand wage increases amid rising cost of living&quot;. 05-23-2022. Science. <a href="https://www.science.org/content/article/ph-d-students-demand-wage-increases-amid-rising-cost-living" target="_blank" rel="noreferrer">doi: 10.1126/science.caredit.add1421.</a></li>
+              <li>&quot;The Motivation and Strategy Behind Biology PhD Stipends&quot;. 05-15-2023. Personal Finance for PhDs Podcast with Dr. Emily Roberts, <a href="https://pfforphds.com/the-motivation-and-strategy-behind-biology-phd-stipends/" target="_blank" rel="noreferrer">Season 14, Episode 10</a></li>
+              <li>&quot;Dataset indicates most universities pay biology Ph.D. stipends below living wage&quot;. 03-24-2024. <a href="https://thecrimsonwhite.com/113898/news/dataset-indicates-most-universities-pay-biology-ph-d-stipends-below-living-wage/" target="_blank" rel="noreferrer">The Crimson White</a></li>
+            </ul>
+          </article>
+
+          <article class="panel text-panel">
+            <h3>Dataset Description</h3>
+            <p>We identified the salary and appointment term. If summer was mandatory in a department, but the term was only 9 months, we included the summer minimum in the annual guaranteed salary, which is used in all plots and calculations. We identified the <a href="https://cehd.gmu.edu/assets/docs/faculty/tenurepromotion/institutions-research-categories.pdf" target="_blank" rel="noreferrer"> Carnegie Classification </a> for all Universities included (R1 = Very High Research Activity, R2 = High Research Activity). UF is a member of the Association of American Universities, therefore we <a href="https://nifa.usda.gov/about-nifa/how-we-work/partnerships/land-grant-colleges-universities" target="_blank" rel="noreferrer">identified if each university was a current member </a>. UF is also a land-grant institution, which can influence federal funding, so we identified if each university was established as a land-grant institution. Additional columns include Public/Private status, source of current stipend rate (ie. url), comments, and geographic location (State and City). We used the geographic information to identify the <a href="https://livingwage.mit.edu/" target="_blank" rel="noreferrer" > MIT Living Wage. </a></p>
+            <table class="dataset-table">
+              <thead>
+                <tr>
+                  <th>Column</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>University</td><td>Name of university.</td></tr>
+                <tr><td>Department</td><td>Name of department.</td></tr>
+                <tr><td>Salary</td><td>Salary based on appointment term.</td></tr>
+                <tr><td>Appointment term</td><td>Length of contracted appointment.</td></tr>
+                <tr><td>Summer support guaranteed</td><td>Whether summer appointment is required or included for every student.</td></tr>
+                <tr><td>Annual guaranteed salary</td><td>Appointment salary plus summer minimum when guaranteed.</td></tr>
+                <tr><td>Carnegie Classification</td><td>Research classification for each university.</td></tr>
+                <tr><td>AAU</td><td>Association of American Universities membership.</td></tr>
+                <tr><td>Land Grant</td><td>Land-grant status.</td></tr>
+                <tr><td>Public</td><td>Public or private status.</td></tr>
+                <tr><td>State / City / County</td><td>Geographic information.</td></tr>
+                <tr><td>MIT Living Wage</td><td>MIT Living Wage for a single adult with no children for the listed geography.</td></tr>
+                <tr><td>Salary/Living</td><td>Annual guaranteed salary divided by MIT Living Wage.</td></tr>
+                <tr><td>Graduate.Union</td><td>Whether the university has a graduate student union.</td></tr>
+                <tr><td>Last.Modified</td><td>Date modified since August 2022.</td></tr>
+              </tbody>
+            </table>
+          </article>
+
+          <article class="panel text-panel">
+            <h3>Citations</h3>
+            <p>Glasmeier, Amy K. Living Wage Calculator. 2023. Massachusetts Institute of Technology. <a href="https://livingwage.mit.edu/" target="_blank" rel="noreferrer">livingwage.mit.edu</a>.</p>
+          </article>
+
+          <article class="panel text-panel">
+            <h3>Acknowledgments</h3>
+            <p>Thank you to Dr. Anna Savage (University of Central Florida) and <a href="https://docs.google.com/spreadsheets/d/1EyTIu_FyLu_z-hXyJLlGZ9ZWN9YGKCwtESIGIAgq3EE/edit?usp=sharing" rel="noreferrer"> the EEB Stipend Google Sheet </a> (Dr. Andy Kern) for directing me to stipend information for numerous universities. There are many others to thank, including the many who contributed to this dataset!</p>
+            <p>Thank you to numerous faculty for their feedback on this dataset. Thanks to Mike Belitz and Caitlin Campbell for their edits. Big thanks to Dr. Jose Miguel Ponciano!</p>
+            <p>We would also like to thank Alyssa Phillips for the UC updates!</p>
+            <p>This work was was inspired by Michelle Kirchner and Jane Petzoldt <a href="https://doi.org/10.1093/ae/tmac018" rel="noreferrer">publication in the American Entomologist.</a></p>
+          </article>
+
+          <article class="panel text-panel">
+            <h3>Usage</h3>
+            <p>If you plan to use this data in research, please contact shellyleegaynor @ gmail.com.</p>
+            <p>We encourage you to use our dataset, but please cite your source by linking this site! If you use our data, work with us and make sure to let us know if you find any <a href="https://forms.gle/dzosvKsiYnQSkDhP9" target="_blank" rel="noreferrer">errors</a> or <a href="https://forms.gle/MXFa1jkzEtnb9A2x7" target="_blank" rel="noreferrer">updates</a></p>
+          </article>
+
+          <article class="panel text-panel">
+            <h3>Other Databases</h3>
+            <ul>
+              <li><a href="https://docs.google.com/presentation/d/1U1WSWlAC-HUlfmuRHNRiFyJdRK3cgmcOKJS9N31YacE/edit" target="_blank" rel="noreferrer">Medicine and Public Health - Teachers &amp; Researchers United, Johns Hopkins University</a></li>
+              <li><a href="https://profession.mla.org/english-phd-stipends-in-the-united-states-statistical-report/" target="_blank" rel="noreferrer">English PhD Stipends in the United States</a></li>
+              <li><a href="https://docs.google.com/spreadsheets/d/1nJKlF2grr4zBxXxFzcoNTCuM8BI1frmreyxriroJlEo/edit?usp=sharing" target="_blank" rel="noreferrer">Big Ten PhD Stipend and Cost of Living - University of Maryland</a></li>
+              <li><a href="https://doi.org/10.1093/ae/tmac018" target="_blank" rel="noreferrer">Entomology Graduate Stipends - Kirchner &amp; Petzoldt</a></li>
+              <li><a href="https://jeffhuang.com/computer-science-open-data/#:~:text=awards%20collection.-,Verified%20Computer%20Science%20Ph.D.%20Stipends,-Computer%20Science%20Stipends" target="_blank" rel="noreferrer">Computer Science PhD Stipends - Jeff Huang</a></li>
+              <li><a href="https://csstipendrankings.org/" target="_blank" rel="noreferrer">CCStipendRankings</a></li>
+              <li><a href="https://liza-wood.github.io/uc-strikevote-opinion.html" target="_blank" rel="noreferrer">Verified University Minimum Stipends - UC Strike</a></li>
+              <li><a href="https://psyarxiv.com/rm3bk" target="_blank" rel="noreferrer">Psychology Internship Stipends - Hood et al. 2022</a></li>
+              <li><a href="https://engage.aps.org/fgsa/resources/pay-data" target="_blank" rel="noreferrer">Physics Graduate Student Pay - APS</a></li>
+              <li><a href="https://gsc.mit.edu/committees/hca/cost-of-living/" target="_blank" rel="noreferrer">MIT Graduate Student Cost of Living</a></li>
+              <li><a href="https://doi.org/10.1177/2053168024124113" target="_blank" rel="noreferrer">Political Science - Warner et al. 2024</a></li>
+              <li><a href="https://www.biorxiv.org/content/10.1101/2024.11.06.622240v3" target="_blank" rel="noreferrer">Canadian science graduate stipends - Fraass et al. 2024</a></li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <section class="tab-panel" id="tab-support">
+      <section class="text-page">
+        <div class="text-stack">
+          <article class="panel text-panel">
+            <h2>Support</h2>
+            <p><strong>Want to support these efforts?</strong> If you find this resource useful, please consider donating to help keep the project alive and updated.</p>
+            <p><a class="support-button" href="https://givebutter.com/C2gRUO" target="_blank" rel="noreferrer">Donate Here</a></p>
+          </article>
+
+          <article class="panel text-panel">
+            <h3>Support for This Work Is Provided By</h3>
+            <ul>
+              <li><a href="http://www.mossmatters.com/" target="_blank" rel="noreferrer">Dr. Matthew Johnson</a></li>
+              <li><a href="https://www.martinevolutionaryecologylab.com/" target="_blank" rel="noreferrer">Dr. Ryan Martin</a></li>
+              <li><a href="https://marcabeer.github.io/index.html" target="_blank" rel="noreferrer">Dr. Marc Beer</a></li>
+              <li><a href="https://www.kheyduk.net/" target="_blank" rel="noreferrer">Dr. Karolina Heyduk</a></li>
+              <li><a href="http://jmbudke.github.io/" target="_blank" rel="noreferrer">Dr. Jessica Budke</a></li>
+              <li><a href="https://mcdaniellab.biology.ufl.edu/" target="_blank" rel="noreferrer">Dr. Stuart McDaniel</a></li>
+              <li><a href="https://plantevoecophys.wordpress.com/" target="_blank" rel="noreferrer">Dr. Chase Mason</a></li>
+              <li><a href="https://www.hybrid-ecology.com/" target="_blank" rel="noreferrer">Dr. Kenneth Thompson</a></li>
+              <li><a href="https://biology.byu.edu/adams-lab" target="_blank" rel="noreferrer">Dr. Byron Adams</a></li>
+              <li><a href="https://harrislabttu.netlify.app/" target="_blank" rel="noreferrer">Dr. Breanna Harris</a></li>
+              <li><a href="http://landislab.org/" target="_blank" rel="noreferrer">Dr. Michael Landis</a></li>
+              <li><a href="https://www.jlmlab.com/" target="_blank" rel="noreferrer">Dr. Jim Leebens-Mack</a></li>
+              <li><a href="https://www.dnacrobatics.com/" target="_blank" rel="noreferrer">Dr. Arnaud Martin</a></li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.3/src/wordcloud2.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script>
+    const SHEET_ID = "1rBOn60tBM6J2iCEbRQdH4Fb2sqCVKi90McpKwD8Tmlc";
+    const SHEET_NAME = "Sheet1";
+    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit?usp=sharing`;
+    const SHEET_GVIZ_BASE_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq`;
+    const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+    const PHD_STIPENDS_CSV_URL = "https://www.phdstipends.com/csv";
+    const PHD_STIPENDS_PROXY_URL = "./phdstipends-live.csv";
+    const PHD_STIPENDS_LOCAL_URL = "./phdstipends.csv";
+    const PHD_COMPARISON_CACHE_URL = "./phd_comparison_cache.json";
+    const PHD_STIPENDS_CSV_FALLBACK_URLS = [
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(PHD_STIPENDS_CSV_URL)}`,
+      `https://cors.isomorphic-git.org/${PHD_STIPENDS_CSV_URL}`
+    ];
+    const stateName = (raw) => String(raw || "").trim();
+    const compact = (raw) => String(raw || "").replace(/\s+/g, " ").trim();
+    const WORD_CLOUD_STOP_WORDS = new Set([
+      "and", "of", "the", "school", "department", "program", "college", "sciences",
+      "science", "for", "in", "at", "to", "a", "an", "university"
+    ]);
+    let liveRows = [];
+    let googleChartsReady;
+    let scatterViewState = null;
+    let phdComparisonLoaded = false;
+    let faqDistanceLoaded = false;
+    let faqPhdComparisonRows = [];
+    let faqLivingDistanceRows = [];
+
+    function setStatus(message, isError = false) {
+      const el = document.getElementById("status");
+      el.textContent = message;
+      el.style.color = isError ? "var(--accent-deep)" : "var(--muted)";
+      el.style.borderStyle = isError ? "solid" : "dashed";
+    }
+
+    function placeTooltip(event, container, tooltip) {
+      const rect = container.getBoundingClientRect();
+      const containerX = event.clientX - rect.left;
+      const containerY = event.clientY - rect.top;
+      const tooltipRect = tooltip.getBoundingClientRect();
+      const pad = 12;
+      let left = containerX;
+      let top = containerY - tooltipRect.height - 12;
+
+      if (left + tooltipRect.width / 2 > rect.width - pad) {
+        left = rect.width - pad - tooltipRect.width / 2;
+      }
+      if (left - tooltipRect.width / 2 < pad) {
+        left = pad + tooltipRect.width / 2;
+      }
+      if (top < pad) {
+        top = Math.min(rect.height - tooltipRect.height - pad, containerY + 18);
+      }
+      if (top < pad) {
+        top = pad;
+      }
+
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    }
+
+    function countBy(values) {
+      const counts = new Map();
+      values.forEach((value) => {
+        counts.set(value, (counts.get(value) || 0) + 1);
+      });
+      return [...counts.entries()];
+    }
+
+    function normalizedUniversityId(row) {
+      return compact(row.University_ID) || compact(row.University) || compact(row.University_ID_CCmatch);
+    }
+
+    function mean(values) {
+      if (!values.length) {
+        return null;
+      }
+      return values.reduce((sum, value) => sum + value, 0) / values.length;
+    }
+
+    function percentile(value, values) {
+      if (value == null || !values.length) {
+        return null;
+      }
+      const sorted = [...values].sort((a, b) => a - b);
+      let count = 0;
+      sorted.forEach((entry) => {
+        if (entry <= value) {
+          count += 1;
+        }
+      });
+      return (count / sorted.length) * 100;
+    }
+
+    function parseMoney(value) {
+      if (typeof value === "number" && Number.isFinite(value)) {
+        return value;
+      }
+      const cleaned = String(value ?? "").replace(/[$,]/g, "").trim();
+      const parsed = Number(cleaned);
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    function formatCurrency(value) {
+      return value == null || !Number.isFinite(value)
+        ? "-"
+        : value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+    }
+
+    function formatCurrencyShort(value) {
+      if (value == null || !Number.isFinite(value)) {
+        return "-";
+      }
+      return Math.abs(value) >= 1000 ? `$${Math.round(value / 1000)}k` : `$${Math.round(value)}`;
+    }
+
+    function niceStep(span, targetTicks = 5) {
+      const raw = Math.max(span / targetTicks, 1);
+      const power = 10 ** Math.floor(Math.log10(raw));
+      const scaled = raw / power;
+      let niceScaled = 10;
+      if (scaled <= 1) {
+        niceScaled = 1;
+      } else if (scaled <= 2) {
+        niceScaled = 2;
+      } else if (scaled <= 2.5) {
+        niceScaled = 2.5;
+      } else if (scaled <= 5) {
+        niceScaled = 5;
+      }
+      return niceScaled * power;
+    }
+
+    function parseCsvLine(line) {
+      const values = [];
+      let current = "";
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i += 1) {
+        const char = line[i];
+        if (char === '"') {
+          if (inQuotes && line[i + 1] === '"') {
+            current += '"';
+            i += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === "," && !inQuotes) {
+          values.push(current);
+          current = "";
+        } else {
+          current += char;
+        }
+      }
+      values.push(current);
+      return values;
+    }
+
+    function parseCsv(text) {
+      const rows = [];
+      let current = "";
+      let inQuotes = false;
+      const lines = [];
+      for (let i = 0; i < text.length; i += 1) {
+        const char = text[i];
+        if (char === '"') {
+          if (inQuotes && text[i + 1] === '"') {
+            current += '"';
+            i += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if ((char === "\n" || char === "\r") && !inQuotes) {
+          if (current) {
+            lines.push(current);
+            current = "";
+          }
+          if (char === "\r" && text[i + 1] === "\n") {
+            i += 1;
+          }
+        } else {
+          current += char;
+        }
+      }
+      if (current) {
+        lines.push(current);
+      }
+      if (!lines.length) {
+        return [];
+      }
+      const headers = parseCsvLine(lines[0]).map((header) => compact(header));
+      for (let i = 1; i < lines.length; i += 1) {
+        const values = parseCsvLine(lines[i]);
+        const row = {};
+        headers.forEach((header, index) => {
+          row[header] = values[index] ?? "";
+        });
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    async function fetchTextWithFallback(urls) {
+      let lastError = null;
+      for (const url of urls) {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+          }
+          const text = await response.text();
+          if (!/^University,Department,/m.test(text)) {
+            throw new Error("Response did not look like the PhD Stipends CSV.");
+          }
+          return text;
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error("All text fetch attempts failed.");
+    }
+
+    async function fetchJsonWithFallback(urls) {
+      let lastError = null;
+      for (const url of urls) {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+          }
+          return await response.json();
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error("All JSON fetch attempts failed.");
+    }
+
+    function formatNumber(value, digits = 2) {
+      return value == null || !Number.isFinite(value) ? "-" : value.toLocaleString("en-US", { maximumFractionDigits: digits, minimumFractionDigits: digits });
+    }
+
+    function formatPValue(value) {
+      if (value == null || !Number.isFinite(value)) {
+        return "-";
+      }
+      if (value < 0.001) {
+        return "<0.001";
+      }
+      return value.toFixed(3);
+    }
+
+    function logGamma(z) {
+      const coefficients = [
+        676.5203681218851,
+        -1259.1392167224028,
+        771.3234287776531,
+        -176.6150291621406,
+        12.507343278686905,
+        -0.13857109526572012,
+        9.984369578019572e-6,
+        1.5056327351493116e-7
+      ];
+
+      if (z < 0.5) {
+        return Math.log(Math.PI) - Math.log(Math.sin(Math.PI * z)) - logGamma(1 - z);
+      }
+
+      z -= 1;
+      let x = 0.9999999999998099;
+      for (let i = 0; i < coefficients.length; i += 1) {
+        x += coefficients[i] / (z + i + 1);
+      }
+      const t = z + coefficients.length - 0.5;
+      return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+    }
+
+    function betacf(a, b, x) {
+      const maxIterations = 200;
+      const epsilon = 3e-7;
+      const fpMin = 1e-30;
+      let qab = a + b;
+      let qap = a + 1;
+      let qam = a - 1;
+      let c = 1;
+      let d = 1 - qab * x / qap;
+      if (Math.abs(d) < fpMin) d = fpMin;
+      d = 1 / d;
+      let h = d;
+
+      for (let m = 1; m <= maxIterations; m += 1) {
+        const m2 = 2 * m;
+        let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+        d = 1 + aa * d;
+        if (Math.abs(d) < fpMin) d = fpMin;
+        c = 1 + aa / c;
+        if (Math.abs(c) < fpMin) c = fpMin;
+        d = 1 / d;
+        h *= d * c;
+        aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+        d = 1 + aa * d;
+        if (Math.abs(d) < fpMin) d = fpMin;
+        c = 1 + aa / c;
+        if (Math.abs(c) < fpMin) c = fpMin;
+        d = 1 / d;
+        const delta = d * c;
+        h *= delta;
+        if (Math.abs(delta - 1) < epsilon) {
+          break;
+        }
+      }
+
+      return h;
+    }
+
+    function regularizedIncompleteBeta(x, a, b) {
+      if (x <= 0) return 0;
+      if (x >= 1) return 1;
+      const bt = Math.exp(logGamma(a + b) - logGamma(a) - logGamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+      if (x < (a + 1) / (a + b + 2)) {
+        return bt * betacf(a, b, x) / a;
+      }
+      return 1 - bt * betacf(b, a, 1 - x) / b;
+    }
+
+    function tTwoTailedPValue(t, degreesOfFreedom) {
+      if (!Number.isFinite(t) || degreesOfFreedom <= 0) {
+        return null;
+      }
+      const x = degreesOfFreedom / (degreesOfFreedom + t * t);
+      return regularizedIncompleteBeta(x, degreesOfFreedom / 2, 0.5);
+    }
+
+    function linearRegression(points) {
+      if (points.length < 3) {
+        return null;
+      }
+
+      const xs = points.map((point) => point.x);
+      const ys = points.map((point) => point.y);
+      const meanX = mean(xs);
+      const meanY = mean(ys);
+      let ssxx = 0;
+      let ssyy = 0;
+      let ssxy = 0;
+
+      points.forEach((point) => {
+        const dx = point.x - meanX;
+        const dy = point.y - meanY;
+        ssxx += dx * dx;
+        ssyy += dy * dy;
+        ssxy += dx * dy;
+      });
+
+      if (ssxx === 0 || ssyy === 0) {
+        return null;
+      }
+
+      const slope = ssxy / ssxx;
+      const intercept = meanY - slope * meanX;
+      const r = ssxy / Math.sqrt(ssxx * ssyy);
+      const r2 = r * r;
+      const degreesOfFreedom = points.length - 2;
+      const t = r * Math.sqrt(degreesOfFreedom / (1 - r2));
+      const pValue = tTwoTailedPValue(Math.abs(t), degreesOfFreedom);
+
+      return { slope, intercept, r2, pValue };
+    }
+
+    function loadGoogleCharts() {
+      if (googleChartsReady) {
+        return googleChartsReady;
+      }
+
+      googleChartsReady = new Promise((resolve, reject) => {
+        if (!window.google || !google.charts) {
+          reject(new Error("Google Charts failed to load."));
+          return;
+        }
+
+        google.charts.load("current", { packages: ["geochart"] });
+        google.charts.setOnLoadCallback(resolve);
+      });
+
+      return googleChartsReady;
+    }
+
+    function formatMaybeDate(values) {
+      const cleaned = values.map(compact).filter(Boolean);
+      if (!cleaned.length) {
+        return "Not listed";
+      }
+
+      const parsed = cleaned
+        .map((value) => {
+          const parts = value.match(/^(\d{1,2})\/(\d{4})$/);
+          if (!parts) {
+            return null;
+          }
+          return new Date(Number(parts[2]), Number(parts[1]) - 1, 1);
+        })
+        .filter(Boolean)
+        .sort((a, b) => b - a);
+
+      if (!parsed.length) {
+        return cleaned[0];
+      }
+
+      return parsed[0].toLocaleString("en-US", { month: "short", year: "numeric" });
+    }
+
+    function csvToRows(csvText) {
+      const rows = [];
+      let current = [];
+      let cell = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < csvText.length; i += 1) {
+        const char = csvText[i];
+        const next = csvText[i + 1];
+
+        if (inQuotes) {
+          if (char === '"' && next === '"') {
+            cell += '"';
+            i += 1;
+          } else if (char === '"') {
+            inQuotes = false;
+          } else {
+            cell += char;
+          }
+          continue;
+        }
+
+        if (char === '"') {
+          inQuotes = true;
+        } else if (char === ",") {
+          current.push(cell);
+          cell = "";
+        } else if (char === "\n") {
+          current.push(cell);
+          rows.push(current);
+          current = [];
+          cell = "";
+        } else if (char !== "\r") {
+          cell += char;
+        }
+      }
+
+      if (cell.length || current.length) {
+        current.push(cell);
+        rows.push(current);
+      }
+
+      if (!rows.length) {
+        return [];
+      }
+
+      const headers = rows[0].map((header, index) => header || `Column ${index + 1}`);
+      return rows.slice(1)
+        .filter((row) => row.some((value) => compact(value)))
+        .map((row) => {
+          const record = {};
+          headers.forEach((header, index) => {
+            record[header] = row[index] ?? "";
+          });
+          return record;
+        });
+    }
+
+    function fetchSheetData() {
+      return new Promise((resolve, reject) => {
+        const callbackName = `sheetCallback_${Date.now()}_${Math.floor(Math.random() * 1e6)}`;
+        const script = document.createElement("script");
+        const googleRoot = window.google || (window.google = {});
+        const vizRoot = googleRoot.visualization || (googleRoot.visualization = {});
+        const queryRoot = vizRoot.Query || (vizRoot.Query = {});
+        const previousSetResponse = queryRoot.setResponse;
+        const timeout = window.setTimeout(() => {
+          cleanup();
+          reject(new Error("Timed out while loading Google Sheet data."));
+        }, 15000);
+
+        function cleanup() {
+          window.clearTimeout(timeout);
+          delete window[callbackName];
+          if (previousSetResponse) {
+            queryRoot.setResponse = previousSetResponse;
+          } else {
+            delete queryRoot.setResponse;
+          }
+          script.remove();
+        }
+
+        function handleResponse(response) {
+          try {
+            const cols = response.table.cols.map((col) => col.label || col.id);
+            const rows = response.table.rows.map((row) => {
+              const record = {};
+              cols.forEach((colName, index) => {
+                record[colName] = row.c[index] ? row.c[index].f ?? row.c[index].v ?? "" : "";
+              });
+              return record;
+            });
+            cleanup();
+            resolve(rows);
+          } catch (error) {
+            cleanup();
+            reject(error);
+          }
+        }
+
+        window[callbackName] = handleResponse;
+        queryRoot.setResponse = handleResponse;
+
+        script.onerror = () => {
+          cleanup();
+          reject(new Error("Script tag could not load the Google Sheet response."));
+        };
+
+        script.src = `${SHEET_GVIZ_BASE_URL}?sheet=${encodeURIComponent(SHEET_NAME)}&tqx=responseHandler:${callbackName};out:json`;
+        document.body.appendChild(script);
+      });
+    }
+
+    async function fetchSheetDataFallback() {
+      const response = await fetch(SHEET_CSV_URL, { mode: "cors" });
+      if (!response.ok) {
+        throw new Error(`CSV fallback failed with status ${response.status}.`);
+      }
+      const text = await response.text();
+      return csvToRows(text);
+    }
+
+    function drawWordCloud(rows) {
+      const container = document.getElementById("wordcloud");
+      const tooltip = document.getElementById("wordcloud-tooltip");
+      container.innerHTML = "";
+      tooltip.style.opacity = "0";
+
+      const counts = countBy(
+        rows
+          .flatMap((row) => compact(row.Department)
+            .toLowerCase()
+            .replace(/&/g, " ")
+            .replace(/[\/,()\-]+/g, " ")
+            .split(/\s+/)
+            .map((word) => word.replace(/[^a-z]/g, ""))
+            .filter((word) => word && !WORD_CLOUD_STOP_WORDS.has(word)))
+      )
+        .map(([text, value]) => ({ text, value }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 100);
+
+      if (!counts.length) {
+        container.innerHTML = '<div class="empty-state">No department data available.</div>';
+        return;
+      }
+
+      const values = counts.map((d) => d.value);
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const wrap = document.createElement("div");
+      wrap.className = "cloud-wrap";
+      const canvas = document.createElement("canvas");
+      const width = container.clientWidth || 900;
+      const height = 440;
+
+      wrap.style.width = `${width}px`;
+      wrap.style.height = `${height}px`;
+      canvas.width = width * Math.min(window.devicePixelRatio || 1, 2);
+      canvas.height = height * Math.min(window.devicePixelRatio || 1, 2);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      wrap.appendChild(canvas);
+      container.appendChild(wrap);
+
+      if (typeof WordCloud !== "function") {
+        container.innerHTML = '<div class="cloud-fallback">The word cloud library could not be loaded.</div>';
+        return;
+      }
+
+      const wordList = counts.map((word) => [word.text, word.value]);
+      const wordLookup = new Map(counts.map((word) => [word.text, word.value]));
+      const blue = "#0021A5";
+
+      WordCloud(canvas, {
+        list: wordList,
+        gridSize: Math.max(4, Math.round(width / 84)),
+        weightFactor(size) {
+          if (max === min) {
+            return 86;
+          }
+          const ratio = (size - min) / (max - min);
+          return 22 + ratio * 185;
+        },
+        fontFamily: "Georgia, Times New Roman, serif",
+        fontWeight: "700",
+        color: blue,
+        backgroundColor: "#ffffff",
+        rotateRatio: 0.18,
+        minRotation: -Math.PI / 6,
+        maxRotation: Math.PI / 6,
+        rotationSteps: 2,
+        shuffle: false,
+        drawOutOfBound: false,
+        shape: "circle",
+        ellipticity: 0.58,
+        clearCanvas: true,
+        hover(item, dimension, event) {
+          if (!item) {
+            tooltip.style.opacity = "0";
+            return;
+          }
+          tooltip.style.opacity = "1";
+          placeTooltip(event, container, tooltip);
+          tooltip.innerHTML = `<strong>${item[0][0].toUpperCase()}${item[0].slice(1)}</strong><br>${wordLookup.get(item[0])} entr${wordLookup.get(item[0]) === 1 ? "y" : "ies"}`;
+        }
+      });
+    }
+
+    async function drawMap(rows) {
+      const container = document.getElementById("us-map");
+      container.innerHTML = "";
+
+      const stateCounts = countBy(
+        rows
+          .map((row) => stateName(row.State))
+          .filter(Boolean)
+      );
+
+      if (!stateCounts.length) {
+        container.innerHTML = '<div class="empty-state">No state data available.</div>';
+        return;
+      }
+
+      await loadGoogleCharts();
+
+      const dataTable = new google.visualization.DataTable();
+      dataTable.addColumn("string", "State");
+      dataTable.addColumn("number", "Entries");
+      dataTable.addRows(stateCounts);
+
+      const chart = new google.visualization.GeoChart(container);
+      chart.draw(dataTable, {
+        region: "US",
+        resolution: "provinces",
+        legend: "none",
+        displayMode: "regions",
+        datalessRegionColor: "#ffffff",
+        defaultColor: "#deebff",
+        colorAxis: { colors: ["#deebff", "#1f4ea3"] },
+        backgroundColor: "transparent",
+        keepAspectRatio: true,
+        tooltip: { textStyle: { fontName: "Georgia", fontSize: 13 } }
+      });
+    }
+
+    function populateUniversitySelect(rows) {
+      const input = document.getElementById("university-select");
+      const datalist = document.getElementById("university-options");
+      const previous = input.value;
+      const universities = [...new Set(rows
+        .map((row) => compact(row.University))
+        .filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b));
+
+      datalist.innerHTML = "";
+      universities.forEach((name) => {
+        const option = document.createElement("option");
+        option.value = name;
+        datalist.appendChild(option);
+      });
+
+      if (universities.includes(previous)) {
+        input.value = previous;
+      } else if (universities.includes("University of Florida")) {
+        input.value = "University of Florida";
+      }
+    }
+
+    function getSelectedMode() {
+      const checked = document.querySelector('input[name="salary-mode"]:checked');
+      return checked ? checked.value : "salary";
+    }
+
+    function getSelectedUniversityRows(rows) {
+      const selectedUniversity = document.getElementById("university-select").value;
+      return rows.filter((row) => compact(row.University) === selectedUniversity);
+    }
+
+    function getSelectedUniversityProfile(rows) {
+      const matches = getSelectedUniversityRows(rows);
+      if (!matches.length) {
+        return null;
+      }
+      const base = matches[0];
+      return {
+        name: compact(base.University),
+        aau: compact(base.AAU),
+        landGrant: compact(base["Land Grant"]),
+        isPublic: compact(base.Public),
+        carnegie: compact(base["Carnegie Classification"]),
+        appointmentTerm: compact(base["Appointment term"]),
+        graduateUnion: compact(base["Graduate.Union"]),
+        salary: mean(matches.map((row) => parseMoney(row["Annual guaranteed salary"])).filter((value) => value != null)),
+        living: mean(matches.map((row) => parseMoney(row["MIT Living Wage (1 adult, 0 children)"])).filter((value) => value != null)),
+        ratio: mean(matches.map((row) => parseMoney(row["Salary/Living"])).filter((value) => value != null))
+      };
+    }
+
+    function updateSelectedProfile(rows) {
+      const profile = getSelectedUniversityProfile(rows);
+      const container = document.getElementById("selected-profile");
+      const activeFields = new Set(
+        [...container.querySelectorAll(".profile-item.active")]
+          .map((item) => item.dataset.field)
+      );
+      container.innerHTML = "";
+
+      const fields = [
+        ["AAU", "AAU", profile ? profile.aau : "-"],
+        ["Land Grant", "Land Grant", profile ? profile.landGrant : "-"],
+        ["Public", "Public", profile ? profile.isPublic : "-"],
+        ["Carnegie Classification", "Carnegie", profile ? profile.carnegie : "-"],
+        ["Appointment term", "Appointment term", profile ? profile.appointmentTerm : "-"],
+        ["Graduate.Union", "Graduate Union", profile ? profile.graduateUnion : "-"]
+      ];
+
+      fields.forEach(([field, labelText, value]) => {
+        const item = document.createElement("div");
+        item.className = `profile-item${activeFields.has(field) ? " active" : ""}`;
+        item.dataset.field = field;
+        const infoBubble = field === "Graduate.Union"
+          ? `<span class="info-bubble" tabindex="0" aria-label="Graduate union information">i<span class="info-bubble-text">Graduate unions are simplified here as yes, no, or in-progress. Because the dataset does not distinguish union type, establishment date, or current bargaining status, it should not be treated as a precise measure of union effects on salary. More background is available from the <a href="https://wugwu.org/resources/graduate-and-undergraduate-student-unions" target="_blank" rel="noreferrer">WashU Undergraduate &amp; Graduate Workers Union</a>.</span></span>`
+          : "";
+        item.innerHTML = `<span class="profile-label">${labelText}${infoBubble}</span><span class="profile-value">${value || "-"}</span>`;
+        const bubble = item.querySelector(".info-bubble");
+        if (bubble) {
+          bubble.addEventListener("click", (event) => {
+            event.stopPropagation();
+          });
+          bubble.addEventListener("mousedown", (event) => {
+            event.stopPropagation();
+          });
+          bubble.querySelectorAll("a").forEach((link) => {
+            link.addEventListener("click", (event) => {
+              event.stopPropagation();
+            });
+          });
+        }
+        item.addEventListener("click", () => {
+          item.classList.toggle("active");
+          const items = [...document.querySelectorAll(".profile-item")];
+          document.getElementById("filter-all-similar").checked = items.length > 0 && items.every((entry) => entry.classList.contains("active"));
+          if (liveRows.length) {
+            drawSalaryHistogram(liveRows);
+            drawScatter(liveRows);
+          }
+        });
+        container.appendChild(item);
+      });
+
+      document.getElementById("filter-all-similar").checked = [...document.querySelectorAll(".profile-item")].every((entry) => entry.classList.contains("active"));
+    }
+
+    function getFilteredRowsForSalary(rows) {
+      const profile = getSelectedUniversityProfile(rows);
+      if (!profile) {
+        return rows;
+      }
+
+      const activeFilters = [...document.querySelectorAll(".profile-item.active")].map((item) => item.dataset.field);
+      if (!activeFilters.length) {
+        return rows;
+      }
+
+      const profileMap = {
+        "AAU": profile.aau,
+        "Land Grant": profile.landGrant,
+        "Public": profile.isPublic,
+        "Carnegie Classification": profile.carnegie,
+        "Appointment term": profile.appointmentTerm,
+        "Graduate.Union": profile.graduateUnion
+      };
+
+      return rows.filter((row) => activeFilters.every((field) => compact(row[field]) === profileMap[field]));
+    }
+
+    function getScatterEncodings() {
+      const valuesFor = (role) => [...document.querySelectorAll(`.scatter-encode[data-role="${role}"]:checked`)].map((input) => input.dataset.field);
+      return {
+        colorBy: valuesFor("color"),
+        shapeBy: valuesFor("shape")
+      };
+    }
+
+    function drawSalaryHistogram(rows) {
+      const container = document.getElementById("salary-histogram");
+      const selectedUniversity = document.getElementById("university-select").value;
+      const mode = getSelectedMode();
+      const profile = getSelectedUniversityProfile(rows);
+      const filteredRows = getFilteredRowsForSalary(rows);
+      const binCount = Number(document.getElementById("bin-count").value);
+      container.innerHTML = "";
+
+      updateSelectedProfile(rows);
+
+      const salaryValues = filteredRows
+        .map((row) => parseMoney(row["Annual guaranteed salary"]))
+        .filter((value) => value != null);
+      const livingValues = filteredRows
+        .map((row) => parseMoney(row["MIT Living Wage (1 adult, 0 children)"]))
+        .filter((value) => value != null);
+      const ratioValues = filteredRows
+        .map((row) => parseMoney(row["Salary/Living"]))
+        .filter((value) => value != null);
+
+      if ((mode === "salary" && (!salaryValues.length || !livingValues.length)) || (mode === "ratio" && !ratioValues.length)) {
+        container.innerHTML = '<div class="empty-state">Salary data is not available.</div>';
+        return;
+      }
+
+      const selectedSalary = profile ? profile.salary : null;
+      const selectedLiving = profile ? profile.living : null;
+      const selectedRatio = profile ? profile.ratio : null;
+      const salaryMean = mean(salaryValues);
+      const livingMean = mean(livingValues);
+      const ratioMean = mean(ratioValues);
+
+      if (mode === "salary") {
+        document.getElementById("salary-mean-label").textContent = "Mean annual salary";
+        document.getElementById("living-mean-label").textContent = "Mean MIT living wage";
+        document.getElementById("selected-value-label").textContent = `Selected university salary (${selectedSalary == null ? "-" : `${Math.round(percentile(selectedSalary, salaryValues))}th percentile`})`;
+        document.getElementById("selected-living-label").textContent = "Selected university MIT living wage";
+        document.getElementById("salary-mean").textContent = formatCurrency(salaryMean);
+        document.getElementById("living-mean").textContent = formatCurrency(livingMean);
+        document.getElementById("selected-salary").textContent = selectedSalary == null ? "-" : formatCurrency(selectedSalary);
+        document.getElementById("selected-living").textContent = selectedLiving == null ? "-" : formatCurrency(selectedLiving);
+        document.getElementById("legend-primary-text").textContent = "Annual guaranteed salary";
+        document.getElementById("legend-secondary-text").textContent = "MIT living wage";
+        document.getElementById("legend-secondary").style.visibility = "visible";
+        document.getElementById("salary-chart-description").textContent = "Both distributions are binned on the same dollar scale, with solid lines for salaries and dashed lines for MIT living wage values.";
+      } else {
+        document.getElementById("salary-mean-label").textContent = "Mean salary/living ratio";
+        document.getElementById("living-mean-label").textContent = "Secondary comparison";
+        document.getElementById("selected-value-label").textContent = `Selected university ratio (${selectedRatio == null ? "-" : `${Math.round(percentile(selectedRatio, ratioValues))}th percentile`})`;
+        document.getElementById("selected-living-label").textContent = "Selected university MIT living wage";
+        document.getElementById("salary-mean").textContent = formatNumber(ratioMean);
+        document.getElementById("living-mean").textContent = "-";
+        document.getElementById("selected-salary").textContent = selectedRatio == null ? "-" : formatNumber(selectedRatio);
+        document.getElementById("selected-living").textContent = "-";
+        document.getElementById("legend-primary-text").textContent = "Salary/Living ratio";
+        document.getElementById("legend-secondary-text").textContent = "";
+        document.getElementById("legend-secondary").style.visibility = "hidden";
+        document.getElementById("salary-chart-description").textContent = "The histogram shows the Salary/Living ratio distribution, with solid lines for the overall mean and selected university value.";
+      }
+
+      const domainValues = mode === "salary" ? [...salaryValues, ...livingValues] : ratioValues;
+      const minValue = Math.min(...domainValues);
+      const maxValue = Math.max(...domainValues);
+      const binSize = (maxValue - minValue) / binCount || 1;
+      const bins = Array.from({ length: binCount }, (_, index) => ({
+        x0: minValue + index * binSize,
+        x1: index === binCount - 1 ? maxValue : minValue + (index + 1) * binSize,
+        salary: 0,
+        living: 0,
+        ratio: 0
+      }));
+
+      function assign(values, key) {
+        values.forEach((value) => {
+          const index = Math.min(binCount - 1, Math.floor((value - minValue) / binSize));
+          bins[Math.max(0, index)][key] += 1;
+        });
+      }
+
+      if (mode === "salary") {
+        assign(salaryValues, "salary");
+        assign(livingValues, "living");
+      } else {
+        assign(ratioValues, "ratio");
+      }
+
+      const width = container.clientWidth || 980;
+      const height = 470;
+      const margin = { top: 24, right: 22, bottom: 54, left: 52 };
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const maxCount = Math.max(...bins.map((bin) => Math.max(bin.salary, bin.living, bin.ratio)), 1);
+
+      const xForValue = (value) => margin.left + ((value - minValue) / (maxValue - minValue || 1)) * plotWidth;
+      const yForCount = (count) => margin.top + plotHeight - (count / maxCount) * plotHeight;
+      const barWidth = plotWidth / binCount;
+
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("width", "100%");
+      svg.setAttribute("height", String(height));
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+      const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      bg.setAttribute("x", "0");
+      bg.setAttribute("y", "0");
+      bg.setAttribute("width", String(width));
+      bg.setAttribute("height", String(height));
+      bg.setAttribute("fill", "transparent");
+      svg.appendChild(bg);
+
+      for (let i = 0; i <= 4; i += 1) {
+        const y = margin.top + (plotHeight / 4) * i;
+        const grid = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        grid.setAttribute("x1", String(margin.left));
+        grid.setAttribute("x2", String(width - margin.right));
+        grid.setAttribute("y1", String(y));
+        grid.setAttribute("y2", String(y));
+        grid.setAttribute("stroke", "#eaded7");
+        grid.setAttribute("stroke-width", "1");
+        svg.appendChild(grid);
+      }
+
+      bins.forEach((bin, index) => {
+        const x = margin.left + index * barWidth;
+        if (mode === "salary") {
+          const salaryHeight = plotHeight - (yForCount(bin.salary) - margin.top);
+          const livingHeight = plotHeight - (yForCount(bin.living) - margin.top);
+
+          const livingRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          livingRect.setAttribute("x", String(x + barWidth * 0.08));
+          livingRect.setAttribute("y", String(margin.top + plotHeight - livingHeight));
+          livingRect.setAttribute("width", String(barWidth * 0.84));
+          livingRect.setAttribute("height", String(livingHeight));
+          livingRect.setAttribute("fill", "#8bb3f3");
+          livingRect.setAttribute("fill-opacity", "0.85");
+          svg.appendChild(livingRect);
+
+          const salaryRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          salaryRect.setAttribute("x", String(x + barWidth * 0.2));
+          salaryRect.setAttribute("y", String(margin.top + plotHeight - salaryHeight));
+          salaryRect.setAttribute("width", String(barWidth * 0.6));
+          salaryRect.setAttribute("height", String(salaryHeight));
+          salaryRect.setAttribute("fill", "#1f4ea3");
+          salaryRect.setAttribute("fill-opacity", "0.72");
+          svg.appendChild(salaryRect);
+        } else {
+          const ratioHeight = plotHeight - (yForCount(bin.ratio) - margin.top);
+          const ratioRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          ratioRect.setAttribute("x", String(x + barWidth * 0.12));
+          ratioRect.setAttribute("y", String(margin.top + plotHeight - ratioHeight));
+          ratioRect.setAttribute("width", String(barWidth * 0.76));
+          ratioRect.setAttribute("height", String(ratioHeight));
+          ratioRect.setAttribute("fill", "#1f4ea3");
+          ratioRect.setAttribute("fill-opacity", "0.8");
+          svg.appendChild(ratioRect);
+        }
+      });
+
+      const markers = mode === "salary"
+        ? [
+          { value: salaryMean, color: "#1f4ea3", dash: "" },
+          { value: livingMean, color: "#6e98da", dash: "10 7" },
+          ...(selectedSalary != null ? [{ value: selectedSalary, color: "#f77f00", dash: "" }] : []),
+          ...(selectedLiving != null ? [{ value: selectedLiving, color: "#f4a261", dash: "10 7" }] : [])
+        ]
+        : [
+          { value: ratioMean, color: "#1f4ea3", dash: "" },
+          ...(selectedRatio != null ? [{ value: selectedRatio, color: "#f77f00", dash: "" }] : [])
+        ];
+
+      markers.forEach((marker) => {
+        const x = xForValue(marker.value);
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", String(x));
+        line.setAttribute("x2", String(x));
+        line.setAttribute("y1", String(margin.top));
+        line.setAttribute("y2", String(margin.top + plotHeight));
+        line.setAttribute("stroke", marker.color);
+        line.setAttribute("stroke-width", marker.dash ? "2" : "3");
+        if (marker.dash) {
+          line.setAttribute("stroke-dasharray", marker.dash);
+        }
+        svg.appendChild(line);
+      });
+
+      const axisX = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      axisX.setAttribute("x1", String(margin.left));
+      axisX.setAttribute("x2", String(width - margin.right));
+      axisX.setAttribute("y1", String(margin.top + plotHeight));
+      axisX.setAttribute("y2", String(margin.top + plotHeight));
+      axisX.setAttribute("stroke", "#6d625b");
+      svg.appendChild(axisX);
+
+      const axisY = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      axisY.setAttribute("x1", String(margin.left));
+      axisY.setAttribute("x2", String(margin.left));
+      axisY.setAttribute("y1", String(margin.top));
+      axisY.setAttribute("y2", String(margin.top + plotHeight));
+      axisY.setAttribute("stroke", "#6d625b");
+      svg.appendChild(axisY);
+
+      const step = niceStep(maxValue - minValue, 5);
+      const tickStart = Math.ceil(minValue / step) * step;
+      const tickEnd = Math.floor(maxValue / step) * step;
+      for (let value = tickStart; value <= tickEnd + step * 0.001; value += step) {
+        const x = xForValue(value);
+        const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        tick.setAttribute("x1", String(x));
+        tick.setAttribute("x2", String(x));
+        tick.setAttribute("y1", String(margin.top + plotHeight));
+        tick.setAttribute("y2", String(margin.top + plotHeight + 6));
+        tick.setAttribute("stroke", "#6d625b");
+        svg.appendChild(tick);
+
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", String(x));
+        label.setAttribute("y", String(height - 18));
+        label.setAttribute("text-anchor", "middle");
+        label.setAttribute("fill", "#6d625b");
+        label.setAttribute("font-size", "12");
+        label.textContent = mode === "salary"
+          ? formatCurrency(value).replace(".00", "")
+          : formatNumber(value, 2);
+        svg.appendChild(label);
+      }
+
+      for (let i = 0; i <= 4; i += 1) {
+        const value = Math.round((maxCount / 4) * (4 - i));
+        const y = margin.top + (plotHeight / 4) * i;
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", String(margin.left - 10));
+        label.setAttribute("y", String(y + 4));
+        label.setAttribute("text-anchor", "end");
+        label.setAttribute("fill", "#6d625b");
+        label.setAttribute("font-size", "12");
+        label.textContent = String(value);
+        svg.appendChild(label);
+      }
+
+      const xTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      xTitle.setAttribute("x", String(margin.left + plotWidth / 2));
+      xTitle.setAttribute("y", String(height - 2));
+      xTitle.setAttribute("text-anchor", "middle");
+      xTitle.setAttribute("fill", "#6d625b");
+      xTitle.setAttribute("font-size", "13");
+      xTitle.textContent = mode === "salary" ? "Annual dollars" : "Salary/Living ratio";
+      svg.appendChild(xTitle);
+
+      const yTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      yTitle.setAttribute("x", "16");
+      yTitle.setAttribute("y", String(margin.top + plotHeight / 2));
+      yTitle.setAttribute("text-anchor", "middle");
+      yTitle.setAttribute("fill", "#6d625b");
+      yTitle.setAttribute("font-size", "13");
+      yTitle.setAttribute("transform", `rotate(-90 16 ${margin.top + plotHeight / 2})`);
+      yTitle.textContent = "Entries";
+      svg.appendChild(yTitle);
+
+      container.appendChild(svg);
+    }
+
+    function drawScatter(rows) {
+      const container = document.getElementById("salary-scatter");
+      const tooltip = document.getElementById("scatter-tooltip");
+      container.innerHTML = "";
+      tooltip.style.opacity = "0";
+
+      if (window.Plotly && typeof window.Plotly.purge === "function") {
+        window.Plotly.purge(container);
+      }
+
+      const filteredRows = getFilteredRowsForSalary(rows)
+        .map((row) => ({
+          row,
+          x: parseMoney(row["MIT Living Wage (1 adult, 0 children)"]),
+          y: parseMoney(row["Annual guaranteed salary"])
+        }))
+        .filter((entry) => entry.x != null && entry.y != null);
+
+      document.getElementById("scatter-n").textContent = filteredRows.length.toLocaleString("en-US");
+
+      if (filteredRows.length < 2) {
+        document.getElementById("scatter-slope").textContent = "-";
+        document.getElementById("scatter-r2").textContent = "-";
+        document.getElementById("scatter-p").textContent = "-";
+        container.innerHTML = '<div class="empty-state">Not enough filtered points for the scatter plot.</div>';
+        return;
+      }
+
+      if (!window.Plotly) {
+        throw new Error("Plotly failed to load.");
+      }
+
+      const regression = linearRegression(filteredRows);
+      document.getElementById("scatter-slope").textContent = regression ? formatNumber(regression.slope, 3) : "-";
+      document.getElementById("scatter-r2").textContent = regression ? formatNumber(regression.r2, 3) : "-";
+      document.getElementById("scatter-p").textContent = regression ? formatPValue(regression.pValue) : "-";
+
+      const { colorBy, shapeBy } = getScatterEncodings();
+      const colorKey = (row) => colorBy.map((field) => `${field}: ${compact(row[field]) || "Not listed"}`).join(" | ");
+      const shapeKey = (row) => shapeBy.map((field) => `${field}: ${compact(row[field]) || "Not listed"}`).join(" | ");
+      const colorValues = colorBy.length ? [...new Set(filteredRows.map((entry) => colorKey(entry.row)))] : [];
+      const shapeValues = shapeBy.length ? [...new Set(filteredRows.map((entry) => shapeKey(entry.row)))] : [];
+      const colorPalette = ["#0b4f9c", "#d1495b", "#2a9d8f", "#f77f00", "#7b2cbf", "#ef476f", "#118ab2", "#06d6a0", "#ffb703", "#8338ec"];
+      const colorMap = new Map(colorValues.map((value, index) => [value, colorPalette[index % colorPalette.length]]));
+      const shapes = ["circle", "square", "triangle-up", "diamond", "cross", "triangle-down"];
+      const shapeMap = new Map(shapeValues.map((value, index) => [value, shapes[index % shapes.length]]));
+      const colorLegend = document.getElementById("scatter-color-legend");
+      const shapeLegend = document.getElementById("scatter-shape-legend");
+
+      colorLegend.innerHTML = "";
+      shapeLegend.innerHTML = "";
+
+      if (colorBy.length) {
+        colorValues.forEach((value) => {
+          const chip = document.createElement("span");
+          chip.className = "legend-chip";
+          chip.innerHTML = `<span class="legend-swatch" style="background:${colorMap.get(value)};"></span><span>${value}</span>`;
+          colorLegend.appendChild(chip);
+        });
+      } else {
+        colorLegend.innerHTML = '<span class="filter-meta">No color grouping selected.</span>';
+      }
+
+      if (shapeBy.length) {
+        const shapeClassMap = {
+          circle: "circle",
+          square: "square",
+          "triangle-up": "triangle",
+          diamond: "diamond",
+          cross: "plus",
+          "triangle-down": "triangle-down"
+        };
+        shapeValues.forEach((value) => {
+          const chip = document.createElement("span");
+          chip.className = "legend-chip";
+          chip.innerHTML = `<span class="shape-swatch ${shapeClassMap[shapeMap.get(value)] || "circle"}"></span><span>${value}</span>`;
+          shapeLegend.appendChild(chip);
+        });
+      } else {
+        shapeLegend.innerHTML = '<span class="filter-meta">No shape grouping selected.</span>';
+      }
+
+      const selectedUniversity = document.getElementById("university-select").value;
+      const unselectedRows = filteredRows.filter((entry) => compact(entry.row.University) !== selectedUniversity);
+      const selectedRows = filteredRows.filter((entry) => compact(entry.row.University) === selectedUniversity);
+      const plotSize = Math.max(640, container.clientWidth || 640);
+      const minX = Math.min(...filteredRows.map((entry) => entry.x));
+      const maxX = Math.max(...filteredRows.map((entry) => entry.x));
+      const minY = Math.min(...filteredRows.map((entry) => entry.y));
+      const maxY = Math.max(...filteredRows.map((entry) => entry.y));
+      const overallMin = Math.min(minX, minY);
+      const overallMax = Math.max(maxX, maxY);
+      const rangeMin = Math.max(0, overallMin - 5000);
+      const rangeMax = overallMax + 5000;
+
+      const traces = [];
+      const grouped = new Map();
+
+      unselectedRows.forEach((entry) => {
+        const cKey = colorBy.length ? colorKey(entry.row) : "All universities";
+        const sKey = shapeBy.length ? shapeKey(entry.row) : "All universities";
+        const groupKey = `${cKey}||${sKey}`;
+        if (!grouped.has(groupKey)) {
+          grouped.set(groupKey, {
+            color: colorBy.length ? colorMap.get(cKey) : "#1f4ea3",
+            shape: shapeBy.length ? shapeMap.get(sKey) : "circle",
+            entries: []
+          });
+        }
+        grouped.get(groupKey).entries.push(entry);
+      });
+
+      grouped.forEach((group) => {
+        const shapeSize = {
+          circle: 10,
+          square: 10,
+          "triangle-up": 11,
+          diamond: 11,
+          cross: 12,
+          "triangle-down": 11
+        };
+        traces.push({
+          type: "scatter",
+          mode: "markers",
+          x: group.entries.map((entry) => entry.x),
+          y: group.entries.map((entry) => entry.y),
+          customdata: group.entries.map((entry) => ([
+            compact(entry.row.University) || "Unknown university",
+            compact(entry.row.Department) || "Not listed",
+            compact(entry.row.AAU) || "Not listed",
+            compact(entry.row["Land Grant"]) || "Not listed",
+            compact(entry.row.Public) || "Not listed",
+            compact(entry.row["Carnegie Classification"]) || "Not listed",
+            compact(entry.row["Appointment term"]) || "Not listed",
+            compact(entry.row["Graduate.Union"]) || "Not listed",
+            formatCurrency(entry.y),
+            formatCurrency(entry.x)
+          ])),
+          marker: {
+            color: group.color,
+            symbol: group.shape,
+            size: shapeSize[group.shape] || 10,
+            sizemode: "diameter",
+            opacity: 0.8,
+            line: { color: "#ffffff", width: 1 }
+          },
+          hovertemplate:
+            "<b>%{customdata[0]}</b><br>" +
+            "Department: %{customdata[1]}<br>" +
+            "AAU: %{customdata[2]}<br>" +
+            "Land Grant: %{customdata[3]}<br>" +
+            "Public: %{customdata[4]}<br>" +
+            "Carnegie: %{customdata[5]}<br>" +
+            "Appointment term: %{customdata[6]}<br>" +
+            "Graduate Union: %{customdata[7]}<br>" +
+            "Salary: %{customdata[8]}<br>" +
+            "MIT living wage: %{customdata[9]}<extra></extra>",
+          showlegend: false
+        });
+      });
+
+      if (selectedRows.length) {
+        traces.push({
+          type: "scatter",
+          mode: "markers",
+          x: selectedRows.map((entry) => entry.x),
+          y: selectedRows.map((entry) => entry.y),
+          customdata: selectedRows.map((entry) => ([
+            compact(entry.row.University) || "Unknown university",
+            compact(entry.row.Department) || "Not listed",
+            compact(entry.row.AAU) || "Not listed",
+            compact(entry.row["Land Grant"]) || "Not listed",
+            compact(entry.row.Public) || "Not listed",
+            compact(entry.row["Carnegie Classification"]) || "Not listed",
+            compact(entry.row["Appointment term"]) || "Not listed",
+            compact(entry.row["Graduate.Union"]) || "Not listed",
+            formatCurrency(entry.y),
+            formatCurrency(entry.x)
+          ])),
+          marker: {
+            color: "#ffb703",
+            symbol: "star",
+            size: 18,
+            line: { color: "#14366f", width: 1.8 }
+          },
+          hovertemplate:
+            "<b>%{customdata[0]}</b><br>" +
+            "Department: %{customdata[1]}<br>" +
+            "AAU: %{customdata[2]}<br>" +
+            "Land Grant: %{customdata[3]}<br>" +
+            "Public: %{customdata[4]}<br>" +
+            "Carnegie: %{customdata[5]}<br>" +
+            "Appointment term: %{customdata[6]}<br>" +
+            "Graduate Union: %{customdata[7]}<br>" +
+            "Salary: %{customdata[8]}<br>" +
+            "MIT living wage: %{customdata[9]}<extra></extra>",
+          showlegend: false
+        });
+      }
+
+      traces.push({
+        type: "scatter",
+        mode: "lines",
+        x: [rangeMin, rangeMax],
+        y: [rangeMin, rangeMax],
+        line: { color: "#6e98da", width: 2, dash: "dash" },
+        hoverinfo: "skip",
+        showlegend: false
+      });
+
+      if (regression) {
+        traces.push({
+          type: "scatter",
+          mode: "lines",
+          x: [rangeMin, rangeMax],
+          y: [
+            regression.intercept + regression.slope * rangeMin,
+            regression.intercept + regression.slope * rangeMax
+          ],
+          line: { color: "#14366f", width: 2.5 },
+          hoverinfo: "skip",
+          showlegend: false
+        });
+      }
+
+      const layout = {
+        width: plotSize,
+        height: plotSize,
+        margin: { t: 14, r: 16, b: 56, l: 68 },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(247,251,255,0.9)",
+        dragmode: "pan",
+        hovermode: "closest",
+        hoverlabel: {
+          bgcolor: "rgba(20, 32, 54, 0.96)",
+          bordercolor: "#14366f",
+          font: { family: "Georgia, Times New Roman, serif", size: 13, color: "#ffffff" },
+          align: "left"
+        },
+        xaxis: {
+          title: "MIT living wage",
+          range: [rangeMin, rangeMax],
+          tickformat: "$~s",
+          gridcolor: "#d7e3f0",
+          zeroline: false
+        },
+        yaxis: {
+          title: "Annual guaranteed salary",
+          range: [rangeMin, rangeMax],
+          tickformat: "$~s",
+          gridcolor: "#d7e3f0",
+          zeroline: false,
+          scaleanchor: "x",
+          scaleratio: 1
+        }
+      };
+
+      window.Plotly.newPlot(container, traces, layout, {
+        responsive: true,
+        displayModeBar: true,
+        scrollZoom: true,
+        modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"],
+        doubleClick: "reset"
+      });
+    }
+
+    async function drawFaqPhdComparison(rows) {
+      const container = document.getElementById("faq-phd-comparison");
+      if (!container || phdComparisonLoaded) {
+        return;
+      }
+      container.innerHTML = '<div class="empty-state">Loading PhD Stipends comparison...</div>';
+
+      try {
+        let comparisonRows;
+        try {
+          const csvText = await fetchTextWithFallback([
+            PHD_STIPENDS_PROXY_URL,
+            PHD_STIPENDS_CSV_URL,
+            ...PHD_STIPENDS_CSV_FALLBACK_URLS
+          ]);
+          const phdRows = parseCsv(csvText)
+            .map((row) => {
+              const overallPay = parseMoney(row["Overall.Pay"] || row["Overall Pay"]);
+              const fees = parseMoney(row.Fees);
+              return {
+                university: compact((row.University || "").replace(/\s\(.*$/, "").replace(/\s-\sSUNY$/i, "").trim()),
+                department: compact(row.Department),
+                comments: compact(row.Comments),
+                academicYear: compact(row["Academic.Year"] || row["Academic Year"]),
+                overallPayAdjusted: overallPay == null ? null : overallPay + (fees || 0)
+              };
+            })
+            .filter((row) =>
+              row.university &&
+              row.department &&
+              row.overallPayAdjusted != null &&
+              row.overallPayAdjusted > 100 &&
+              ["2024-2025", "2023-2024", "2022-2023", "2021-2022", "2020-2021", "2019-2020"].includes(row.academicYear) &&
+              !/(MS |M\.S\.|Masters|master|masters|Master| ms)/.test(row.comments)
+            );
+
+          const localRows = rows
+            .map((row) => ({
+              university: compact(row.University_ID),
+              department: compact(row.Department),
+              annualSalary: parseMoney(row["Annual guaranteed salary"])
+            }))
+            .filter((row) => row.university && row.department && row.annualSalary != null);
+
+          const localKeyMap = new Map();
+          localRows.forEach((row) => {
+            const key = `${row.university}||${row.department}`;
+            if (!localKeyMap.has(key)) {
+              localKeyMap.set(key, []);
+            }
+            localKeyMap.get(key).push(row.annualSalary);
+          });
+
+          const byUniversityDepartment = new Map();
+          phdRows.forEach((row) => {
+            const key = `${row.university}||${row.department}`;
+            const salaryMatches = localKeyMap.get(key);
+            if (!salaryMatches || !salaryMatches.length) {
+              return;
+            }
+            const differences = salaryMatches.map((salary) => row.overallPayAdjusted - salary);
+            if (!byUniversityDepartment.has(key)) {
+              byUniversityDepartment.set(key, []);
+            }
+            byUniversityDepartment.get(key).push(...differences);
+          });
+
+          comparisonRows = [...byUniversityDepartment.entries()]
+            .map(([key, values]) => {
+              const [university, department] = key.split("||");
+              return {
+                label: `${university} - ${department}`,
+                mean: mean(values),
+                type: mean(values) >= 0 ? "positive" : "negative"
+              };
+            })
+            .filter((row) => row.mean != null)
+            .sort((a, b) => b.mean - a.mean);
+        } catch (liveError) {
+          comparisonRows = await fetchJsonWithFallback([PHD_COMPARISON_CACHE_URL]);
+        }
+
+        faqPhdComparisonRows = comparisonRows;
+        if (!comparisonRows.length) {
+          container.innerHTML = '<div class="empty-state">No overlapping PhD Stipends comparison rows could be matched.</div>';
+          return;
+        }
+        renderFaqComparisonTable(container, comparisonRows, document.getElementById("faq-phd-filter")?.value || "", {
+          leftLabel: "University - Department",
+          middleLabel: "Mean Difference"
+        });
+        phdComparisonLoaded = true;
+      } catch (error) {
+        console.error(error);
+        container.innerHTML = '<div class="empty-state">The PhD Stipends comparison plot could not be loaded right now.</div>';
+      }
+    }
+
+    function drawFaqLivingDistance(rows) {
+      const container = document.getElementById("faq-living-distance");
+      if (!container || faqDistanceLoaded) {
+        return;
+      }
+
+      const comparisonRows = rows
+        .map((row) => {
+          const university = compact(row.University_ID) || compact(row.University);
+          const department = compact(row.Department);
+          const salary = parseMoney(row["Annual guaranteed salary"]);
+          const living = parseMoney(row["MIT Living Wage (1 adult, 0 children)"]);
+          if (!university || !department || salary == null || living == null) {
+            return null;
+          }
+          const difference = salary - living;
+          return {
+            label: `${university} - ${department}`,
+            mean: difference,
+            type: difference >= 0 ? "positive" : "negative"
+          };
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.mean - a.mean);
+
+      faqLivingDistanceRows = comparisonRows;
+      if (!comparisonRows.length) {
+        container.innerHTML = '<div class="empty-state">No salary and MIT living wage overlap is available.</div>';
+        return;
+      }
+      renderFaqComparisonTable(container, comparisonRows, document.getElementById("faq-living-filter")?.value || "", {
+        leftLabel: "University - Department",
+        middleLabel: "Distance from Living Wage"
+      });
+      faqDistanceLoaded = true;
+    }
+
+    function renderFaqComparisonTable(container, rows, filterValue, labels) {
+      const query = compact(filterValue).toLowerCase();
+      const filteredRows = query
+        ? rows.filter((row) => row.label.toLowerCase().includes(query))
+        : rows;
+
+      if (!filteredRows.length) {
+        container.innerHTML = '<div class="empty-state">No rows match that university filter.</div>';
+        return;
+      }
+
+      const axisMax = Math.max(...filteredRows.map((row) => Math.abs(row.mean)), 1);
+      container.innerHTML = "";
+
+      const chart = document.createElement("div");
+      chart.className = "faq-comparison";
+
+      const header = document.createElement("div");
+      header.className = "faq-comparison-header";
+      header.innerHTML = `<div>${labels.leftLabel}</div><div>${labels.middleLabel}</div><div>Value</div>`;
+      chart.appendChild(header);
+
+      filteredRows.forEach((row) => {
+        const line = document.createElement("div");
+        line.className = "faq-comparison-row";
+
+        const label = document.createElement("div");
+        label.className = "faq-comparison-label";
+        label.textContent = row.label;
+
+        const track = document.createElement("div");
+        track.className = "faq-comparison-track";
+        track.title = `${row.label}: ${formatCurrency(row.mean)}`;
+
+        const zero = document.createElement("div");
+        zero.className = "faq-comparison-zero";
+        track.appendChild(zero);
+
+        const bar = document.createElement("div");
+        bar.className = `faq-comparison-bar ${row.type}`;
+        const widthPercent = `${Math.max((Math.abs(row.mean) / axisMax) * 50, 0.6)}%`;
+        bar.style.width = widthPercent;
+        if (row.mean >= 0) {
+          bar.style.left = "50%";
+        } else {
+          bar.style.right = "50%";
+        }
+        track.appendChild(bar);
+
+        const value = document.createElement("div");
+        value.className = "faq-comparison-value";
+        value.textContent = formatCurrency(row.mean);
+
+        line.appendChild(label);
+        line.appendChild(track);
+        line.appendChild(value);
+        chart.appendChild(line);
+      });
+
+      container.appendChild(chart);
+    }
+
+    function drawCategoryCharts(rows) {
+      const container = document.getElementById("category-charts");
+      container.innerHTML = "";
+
+      const categories = [
+        "Appointment term",
+        "Carnegie Classification",
+        "AAU",
+        "Land Grant",
+        "Public",
+        "Graduate.Union"
+      ];
+
+      categories.forEach((category) => {
+        const countsByValue = new Map();
+
+        rows.forEach((row) => {
+          const universityId = normalizedUniversityId(row);
+          const value = compact(row[category]);
+
+          if (!universityId || !value) {
+            return;
+          }
+
+          if (!countsByValue.has(value)) {
+            countsByValue.set(value, new Set());
+          }
+
+          countsByValue.get(value).add(universityId);
+        });
+
+        const card = document.createElement("section");
+        card.className = "mini-card";
+        const title = document.createElement("h3");
+        title.textContent = category;
+        card.appendChild(title);
+
+        const entries = [...countsByValue.entries()]
+          .map(([label, universities]) => ({ label, count: universities.size }))
+          .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+
+        if (!entries.length) {
+          const empty = document.createElement("div");
+          empty.className = "mini-empty";
+          empty.textContent = "No values available.";
+          card.appendChild(empty);
+          container.appendChild(card);
+          return;
+        }
+
+        const chart = document.createElement("div");
+        chart.className = "mini-chart";
+        const max = Math.max(...entries.map((entry) => entry.count), 1);
+
+        entries.forEach((entry) => {
+          const row = document.createElement("div");
+          row.className = "bar-row";
+          row.title = `${entry.label}: ${entry.count} universities`;
+
+          const label = document.createElement("div");
+          label.className = "bar-label";
+          label.textContent = entry.label;
+
+          const track = document.createElement("div");
+          track.className = "bar-track";
+
+          const fill = document.createElement("div");
+          fill.className = "bar-fill";
+          fill.style.width = `${(entry.count / max) * 100}%`;
+          track.appendChild(fill);
+
+          const value = document.createElement("div");
+          value.className = "bar-value";
+          value.textContent = entry.count.toLocaleString("en-US");
+
+          row.appendChild(label);
+          row.appendChild(track);
+          row.appendChild(value);
+          chart.appendChild(row);
+        });
+
+        card.appendChild(chart);
+        container.appendChild(card);
+      });
+    }
+
+    function updateSummary(rows) {
+      const universities = rows.map((row) => normalizedUniversityId(row)).filter(Boolean);
+      const departments = rows.map((row) => compact(row.Department)).filter(Boolean);
+      const states = rows.map((row) => stateName(row.State)).filter(Boolean);
+      const cities = rows.map((row) => compact(row.City)).filter(Boolean);
+      const counties = rows.map((row) => compact(row.County)).filter(Boolean);
+      const modifiedValues = rows.map((row) => compact(row["Last.Modified"] || row["Last.Modified"] || row["Last Modified"] || row["Last.Modified"])).filter(Boolean);
+
+      document.getElementById("entries-count").textContent = rows.length.toLocaleString("en-US");
+      document.getElementById("universities-count").textContent = new Set(universities).size.toLocaleString("en-US");
+      document.getElementById("departments-count").textContent = new Set(departments).size.toLocaleString("en-US");
+      document.getElementById("states-count").textContent = new Set(states).size.toLocaleString("en-US");
+      document.getElementById("cities-count").textContent = new Set(cities).size.toLocaleString("en-US");
+      document.getElementById("counties-count").textContent = new Set(counties).size.toLocaleString("en-US");
+      document.getElementById("last-updated").textContent = formatMaybeDate(modifiedValues);
+
+      setStatus(`Loaded ${rows.length.toLocaleString("en-US")} live rows from the Google Sheet.`);
+    }
+
+    function activateTab(tabName) {
+      document.querySelectorAll(".tab-button").forEach((button) => {
+        button.classList.toggle("active", button.dataset.tab === tabName);
+      });
+      document.querySelectorAll(".tab-panel").forEach((panel) => {
+        panel.classList.toggle("active", panel.id === `tab-${tabName}`);
+      });
+
+      if (!liveRows.length) {
+        return;
+      }
+
+      if (tabName === "salaries") {
+        drawSalaryHistogram(liveRows);
+        drawScatter(liveRows);
+      }
+
+      if (tabName === "faq") {
+        drawFaqPhdComparison(liveRows);
+        drawFaqLivingDistance(liveRows);
+      }
+
+      if (tabName === "overview") {
+        drawWordCloud(liveRows);
+        drawMap(liveRows);
+      }
+    }
+
+    function bindUi() {
+      document.querySelectorAll(".tab-button").forEach((button) => {
+        button.addEventListener("click", () => activateTab(button.dataset.tab));
+      });
+
+      document.getElementById("university-select").addEventListener("change", () => {
+        if (liveRows.length) {
+          drawSalaryHistogram(liveRows);
+          drawScatter(liveRows);
+        }
+      });
+      document.getElementById("university-select").addEventListener("input", () => {
+        if (liveRows.length) {
+          drawSalaryHistogram(liveRows);
+          drawScatter(liveRows);
+        }
+      });
+
+      document.querySelectorAll('input[name="salary-mode"]').forEach((input) => {
+        input.addEventListener("change", () => {
+          if (liveRows.length) {
+            drawSalaryHistogram(liveRows);
+            drawScatter(liveRows);
+          }
+        });
+      });
+
+      document.getElementById("bin-count").addEventListener("input", (event) => {
+        document.getElementById("bin-count-value").textContent = event.target.value;
+        if (liveRows.length) {
+          drawSalaryHistogram(liveRows);
+          drawScatter(liveRows);
+        }
+      });
+
+      document.getElementById("filter-all-similar").addEventListener("change", (event) => {
+        document.querySelectorAll(".profile-item").forEach((item) => {
+          item.classList.toggle("active", event.target.checked);
+        });
+        if (liveRows.length) {
+          drawSalaryHistogram(liveRows);
+          drawScatter(liveRows);
+        }
+      });
+
+      document.querySelectorAll(".scatter-encode").forEach((input) => {
+        input.addEventListener("change", () => {
+          if (liveRows.length) {
+            drawScatter(liveRows);
+          }
+        });
+      });
+
+      const faqPhdFilter = document.getElementById("faq-phd-filter");
+      if (faqPhdFilter) {
+        faqPhdFilter.addEventListener("input", () => {
+          const container = document.getElementById("faq-phd-comparison");
+          if (container && faqPhdComparisonRows.length) {
+            renderFaqComparisonTable(container, faqPhdComparisonRows, faqPhdFilter.value, {
+              leftLabel: "University - Department",
+              middleLabel: "Mean Difference"
+            });
+          }
+        });
+      }
+
+      const faqLivingFilter = document.getElementById("faq-living-filter");
+      if (faqLivingFilter) {
+        faqLivingFilter.addEventListener("input", () => {
+          const container = document.getElementById("faq-living-distance");
+          if (container && faqLivingDistanceRows.length) {
+            renderFaqComparisonTable(container, faqLivingDistanceRows, faqLivingFilter.value, {
+              leftLabel: "University - Department",
+              middleLabel: "Distance from Living Wage"
+            });
+          }
+        });
+      }
+    }
+
+    async function init() {
+      try {
+        if (!liveRows.length) {
+          let rows;
+          try {
+            setStatus("Loading the latest entries from the Google Sheet...");
+            rows = await fetchSheetData();
+          } catch (jsonpError) {
+            console.error("Primary JSONP sheet load failed.", jsonpError);
+            setStatus(`Primary live-sheet load failed, trying CSV fallback...`, true);
+            rows = await fetchSheetDataFallback();
+          }
+          liveRows = rows.filter((row) => compact(row.University) || compact(row.Department) || compact(row.State));
+          updateSummary(liveRows);
+          populateUniversitySelect(liveRows);
+        }
+
+        try {
+          drawWordCloud(liveRows);
+        } catch (error) {
+          console.error(error);
+          document.getElementById("wordcloud").innerHTML = '<div class="empty-state">The department word cloud could not be rendered.</div>';
+        }
+
+        try {
+          await drawMap(liveRows);
+        } catch (error) {
+          console.error(error);
+          document.getElementById("us-map").innerHTML = '<div class="empty-state">The U.S. map could not be rendered.</div>';
+        }
+
+        try {
+          drawCategoryCharts(liveRows);
+        } catch (error) {
+          console.error(error);
+          document.getElementById("category-charts").innerHTML = '<div class="empty-state">The university category charts could not be rendered.</div>';
+        }
+
+        try {
+          drawSalaryHistogram(liveRows);
+        } catch (error) {
+          console.error(error);
+          document.getElementById("salary-histogram").innerHTML = '<div class="empty-state">The salary histogram could not be rendered.</div>';
+        }
+
+        try {
+          drawScatter(liveRows);
+        } catch (error) {
+          console.error(error);
+          document.getElementById("salary-scatter").innerHTML = '<div class="empty-state">The salary scatter plot could not be rendered.</div>';
+        }
+      } catch (error) {
+        console.error(error);
+        setStatus(`Unable to load the live Google Sheet. ${error.message}`, true);
+      }
+    }
+
+    window.addEventListener("load", () => {
+      bindUi();
+      init();
+    });
+    window.addEventListener("resize", () => {
+      if (window.__resizeTimer) {
+        window.clearTimeout(window.__resizeTimer);
+      }
+      window.__resizeTimer = window.setTimeout(init, 180);
+    });
+  </script>
+</body>
+</html>
