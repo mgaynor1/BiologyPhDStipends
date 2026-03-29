@@ -356,7 +356,7 @@
 
     .salary-top {
       display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
+      grid-template-columns: 1.2fr 0.8fr;
       gap: 1.5rem;
       align-items: start;
     }
@@ -370,6 +370,18 @@
       display: grid;
       gap: 0.45rem;
       margin-bottom: 1rem;
+    }
+
+    .control-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .control-grid-2 .control-row {
+      margin-bottom: 0;
     }
 
     .control-row:last-child {
@@ -868,8 +880,8 @@
 
     .profile-grid {
       display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 0.45rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.55rem;
     }
 
     .profile-item {
@@ -913,7 +925,7 @@
     .filter-grid {
       display: grid;
       gap: 0.5rem;
-      margin-top: 0.9rem;
+      margin-top: 0.75rem;
     }
 
     .filter-row {
@@ -1023,6 +1035,10 @@
       }
 
       .salary-top {
+        grid-template-columns: 1fr;
+      }
+
+      .control-grid-2 {
         grid-template-columns: 1fr;
       }
 
@@ -1217,25 +1233,37 @@
       <section class="salary-shell">
         <div class="salary-top">
           <article class="panel salary-controls">
-            <h2>Salary Distribution</h2>
-            <p class="salary-note">Compare annual guaranteed salaries to MIT living wage values from the live sheet, then place a selected university on the same spectrum.</p>
+            <h2>Salary Comparisons</h2>
+            <p class="salary-note">Compare annual guaranteed salaries to the selected living-cost source, then place a selected university on the same spectrum.</p>
+            <p class="salary-note" style="margin-top:0.7rem;">MIT uses the <a href="https://livingwage.mit.edu/" target="_blank" rel="noreferrer">Living Wage Calculator</a> annual value for one adult with no children. EPI uses the <a href="https://www.epi.org/resources/budget/budget-map/" target="_blank" rel="noreferrer">Family Budget Calculator</a> annual total for <code>1p0c</code>.</p>
             <div class="control-row">
               <label for="university-select">University</label>
               <input id="university-select" list="university-options" placeholder="Search for a university" type="search">
               <datalist id="university-options"></datalist>
             </div>
-            <div class="control-row">
-              <label>Display mode</label>
-              <div class="segmented">
-                <input checked id="mode-salary" name="salary-mode" type="radio" value="salary">
-                <label for="mode-salary">Salary</label>
-                <input id="mode-ratio" name="salary-mode" type="radio" value="ratio">
-                <label for="mode-ratio">Salary/Living</label>
+            <div class="control-grid-2">
+              <div class="control-row">
+                <label>Display mode</label>
+                <div class="segmented">
+                  <input checked id="mode-salary" name="salary-mode" type="radio" value="salary">
+                  <label for="mode-salary">Salary</label>
+                  <input id="mode-ratio" name="salary-mode" type="radio" value="ratio">
+                  <label for="mode-ratio">Salary/Living</label>
+                </div>
+              </div>
+              <div class="control-row">
+                <label>Living cost source</label>
+                <div class="segmented">
+                  <input checked id="living-source-mit" name="living-source" type="radio" value="mit">
+                  <label for="living-source-mit">MIT</label>
+                  <input id="living-source-epi" name="living-source" type="radio" value="epi">
+                  <label for="living-source-epi">EPI</label>
+                </div>
               </div>
             </div>
             <div class="control-row">
-              <label for="bin-count">Histogram bins: <span id="bin-count-value">14</span></label>
-              <input id="bin-count" max="30" min="6" step="1" type="range" value="14">
+              <label for="bin-count">Histogram bins: <span id="bin-count-value">20</span></label>
+              <input id="bin-count" max="30" min="6" step="1" type="range" value="20">
             </div>
           </article>
           <article class="panel salary-filter-panel">
@@ -1252,6 +1280,7 @@
                   <input id="filter-all-similar" type="checkbox">
                   <span>Turn all category filters on</span>
                 </label>
+                <div class="filter-meta"><strong>Plotted points:</strong> <span id="filter-point-count">-</span></div>
                 <div class="filter-meta">Active filters limit both salary plots to universities with matching category values.</div>
               </div>
             </div>
@@ -1291,7 +1320,7 @@
               <span class="legend-chip"><span class="legend-line" id="legend-primary" style="border-top-color:#1f4ea3;"></span><span id="legend-primary-text">Annual guaranteed salary</span></span>
               <span class="legend-chip"><span class="legend-line dotted" id="legend-secondary" style="border-top-color:#8bb3f3;"></span><span id="legend-secondary-text">MIT living wage</span></span>
               <span class="legend-chip"><span class="legend-line" style="border-top-color:#f77f00;"></span>Selected university salary</span>
-              <span class="legend-chip"><span class="legend-line dotted" style="border-top-color:#f4a261;"></span>Selected university MIT living wage</span>
+              <span class="legend-chip" id="legend-selected-living-chip"><span class="legend-line dotted" style="border-top-color:#f4a261;"></span><span id="legend-selected-living-text">Selected university MIT living wage</span></span>
             </div>
           </div>
         </article>
@@ -1299,10 +1328,10 @@
         <article class="panel salary-chart-panel">
           <div class="viz-header">
             <div>
-              <h2>Salary to Living Wage</h2>
-              <p>Here we examine the relationship between guaranteed annual salary and <a href="https://livingwage.mit.edu/" target="_blank" rel="noreferrer">MIT required annual income before taxes</a>, which is part of the MIT living wage. Some institutions have multiple stipend rates depending on stage in the program, but for this comparison the starting salary is used. The living wage shown is for a single adult with no children.</p>
-              <p><strong>Justification:</strong> The MIT living wage is annual, and this dashboard also treats annual guaranteed salary as annual even when the appointment term is 9 months. If a program is only legally contracted for 9 months and summer funding is not guaranteed, many students may still be expected to continue research while outside work is discouraged, and international student visa rules can further limit outside employment.</p>
-              <p><strong>Plot information:</strong> The selected university is highlighted with a gold star. The dashed diagonal is the 1:1 ratio between salary and living wage, and the dark regression line summarizes the filtered points currently shown.</p>
+              <h2>Salary to Living Cost</h2>
+              <p>Here we examine the relationship between guaranteed annual salary and the selected living-cost benchmark for a single adult with no children. Some institutions have multiple stipend rates depending on stage in the program, but for this comparison the starting salary is used.</p>
+              <p><strong>Justification:</strong> These living-cost values are annual, and this dashboard also treats annual guaranteed salary as annual even when the appointment term is 9 months. If a program is only legally contracted for 9 months and summer funding is not guaranteed, many students may still be expected to continue research while outside work is discouraged, and international student visa rules can further limit outside employment.</p>
+              <p><strong>Plot information:</strong> The selected university is highlighted with a gold star. The dashed diagonal is the 1:1 ratio between salary and the chosen living-cost source, and the dark regression line summarizes the filtered points currently shown.</p>
               <p><strong>Navigating the plot:</strong> Use the mouse wheel or trackpad to zoom and drag to pan. Double click to reset the view.</p>
             </div>
           </div>
@@ -1394,6 +1423,12 @@
           </article>
 
           <article class="panel text-panel">
+            <h3>What is the EPI Family Budget?</h3>
+            <p>The <a href="https://www.epi.org/resources/budget/budget-map/" target="_blank" rel="noreferrer">Economic Policy Institute Family Budget Calculator</a> estimates local annual budgets using county and metro-level costs for housing, food, transportation, health care, other necessities, childcare, and taxes.</p>
+            <p>For this dashboard, the comparable EPI measure is the annual total for <code>1p0c</code>, which corresponds to one parent with no children. We use the county-level file where possible so the EPI comparison stays geographically specific.</p>
+          </article>
+
+          <article class="panel text-panel">
             <h3>Why didn&apos;t you adjust for subsidized housing?</h3>
             <p>A small subset of programs have subsidized housing available. If you are a prospective student, we suggest checking program websites for high-cost areas to learn more about potential subsidized housing opportunities.</p>
           </article>
@@ -1439,6 +1474,7 @@
               <label for="faq-phd-filter">Filter by university</label>
               <input id="faq-phd-filter" placeholder="Type a university name" type="search">
             </div>
+            <div class="filter-meta" id="faq-phd-debug" style="margin-top: 0.35rem;">Preparing comparison...</div>
             <div class="viz-frame" style="margin-top: 1rem; min-height: 720px; overflow: auto;">
               <div id="faq-phd-comparison"></div>
             </div>
@@ -1453,6 +1489,18 @@
             </div>
             <div class="viz-frame" style="margin-top: 1rem; min-height: 720px; overflow: auto;">
               <div id="faq-living-distance"></div>
+            </div>
+          </article>
+
+          <article class="panel text-panel">
+            <h3>How far is our salary from the EPI Family Budget?</h3>
+            <p>Here we show the dollar distance between annual guaranteed salary and the EPI Family Budget annual total for <code>1p0c</code> for each university-department entry in the current dataset. Positive values indicate salary above the EPI benchmark; negative values indicate salary below it.</p>
+            <div class="control-row" style="margin-top: 1rem; max-width: 28rem;">
+              <label for="faq-epi-filter">Filter by university</label>
+              <input id="faq-epi-filter" placeholder="Type a university name" type="search">
+            </div>
+            <div class="viz-frame" style="margin-top: 1rem; min-height: 720px; overflow: auto;">
+              <div id="faq-epi-distance"></div>
             </div>
           </article>
         </div>
@@ -1515,6 +1563,7 @@
           <article class="panel text-panel">
             <h3>Citations</h3>
             <p>Glasmeier, Amy K. Living Wage Calculator. 2023. Massachusetts Institute of Technology. <a href="https://livingwage.mit.edu/" target="_blank" rel="noreferrer">livingwage.mit.edu</a>.</p>
+            <p>Economic Policy Institute. Family Budget Calculator Data. <a href="https://www.epi.org/resources/budget/budget-map/" target="_blank" rel="noreferrer">epi.org/resources/budget/budget-map/</a>.</p>
           </article>
 
           <article class="panel text-panel">
@@ -1595,6 +1644,8 @@
     const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
     const PHD_STIPENDS_CSV_URL = "https://www.phdstipends.com/csv";
     const PHD_STIPENDS_PROXY_URL = "./phdstipends-live.csv";
+    const PHD_STIPENDS_COMPARISON_URL = "./phdstipends-comparison.json";
+    const EPI_FAMILY_BUDGET_URL = "./epi-family-budget.json";
     const PHD_STIPENDS_LOCAL_URL = "./phdstipends.csv";
     const PHD_COMPARISON_CACHE_URL = "./phd_comparison_cache.json";
     const PHD_STIPENDS_CSV_FALLBACK_URLS = [
@@ -1612,8 +1663,27 @@
     let scatterViewState = null;
     let phdComparisonLoaded = false;
     let faqDistanceLoaded = false;
+    let faqEpiLoaded = false;
     let faqPhdComparisonRows = [];
     let faqLivingDistanceRows = [];
+    let faqEpiDistanceRows = [];
+    let epiFamilyBudget = null;
+    let epiFamilyBudgetPromise = null;
+    window.__biologyDebug = window.__biologyDebug || {};
+
+    const STATE_ABBREVIATIONS = {
+      "ALABAMA": "AL", "ALASKA": "AK", "ARIZONA": "AZ", "ARKANSAS": "AR", "CALIFORNIA": "CA",
+      "COLORADO": "CO", "CONNECTICUT": "CT", "DELAWARE": "DE", "DISTRICT OF COLUMBIA": "DC",
+      "FLORIDA": "FL", "GEORGIA": "GA", "HAWAII": "HI", "IDAHO": "ID", "ILLINOIS": "IL",
+      "INDIANA": "IN", "IOWA": "IA", "KANSAS": "KS", "KENTUCKY": "KY", "LOUISIANA": "LA",
+      "MAINE": "ME", "MARYLAND": "MD", "MASSACHUSETTS": "MA", "MICHIGAN": "MI", "MINNESOTA": "MN",
+      "MISSISSIPPI": "MS", "MISSOURI": "MO", "MONTANA": "MT", "NEBRASKA": "NE", "NEVADA": "NV",
+      "NEW HAMPSHIRE": "NH", "NEW JERSEY": "NJ", "NEW MEXICO": "NM", "NEW YORK": "NY",
+      "NORTH CAROLINA": "NC", "NORTH DAKOTA": "ND", "OHIO": "OH", "OKLAHOMA": "OK", "OREGON": "OR",
+      "PENNSYLVANIA": "PA", "RHODE ISLAND": "RI", "SOUTH CAROLINA": "SC", "SOUTH DAKOTA": "SD",
+      "TENNESSEE": "TN", "TEXAS": "TX", "UTAH": "UT", "VERMONT": "VT", "VIRGINIA": "VA",
+      "WASHINGTON": "WA", "WEST VIRGINIA": "WV", "WISCONSIN": "WI", "WYOMING": "WY"
+    };
 
     function setStatus(message, isError = false) {
       const el = document.getElementById("status");
@@ -1688,6 +1758,106 @@
       const cleaned = String(value ?? "").replace(/[$,]/g, "").trim();
       const parsed = Number(cleaned);
       return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    function slugifyCounty(value) {
+      return compact(value)
+        .toLowerCase()
+        .replace(/\b(city and borough|census area|municipality|borough|parish|county|city)\b/g, " ")
+        .replace(/[^a-z0-9]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function stateAbbreviation(value) {
+      const cleaned = compact(value).toUpperCase();
+      if (!cleaned) {
+        return "";
+      }
+      if (/^[A-Z]{2}$/.test(cleaned)) {
+        return cleaned;
+      }
+      return STATE_ABBREVIATIONS[cleaned] || "";
+    }
+
+    function getSelectedLivingSource() {
+      const checked = document.querySelector('input[name="living-source"]:checked');
+      return checked ? checked.value : "mit";
+    }
+
+    async function ensureEpiFamilyBudget() {
+      if (epiFamilyBudget) {
+        return epiFamilyBudget;
+      }
+      if (!epiFamilyBudgetPromise) {
+        epiFamilyBudgetPromise = fetch(EPI_FAMILY_BUDGET_URL)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`EPI request failed with status ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((payload) => {
+            epiFamilyBudget = payload;
+            return payload;
+          })
+          .catch((error) => {
+            epiFamilyBudgetPromise = null;
+            throw error;
+          });
+      }
+      return epiFamilyBudgetPromise;
+    }
+
+    async function ensureLivingSourceData(source) {
+      if (source === "epi") {
+        await ensureEpiFamilyBudget();
+      }
+    }
+
+    function getLivingSourceConfig(source = getSelectedLivingSource()) {
+      if (source === "epi") {
+        return {
+          key: "epi",
+          shortLabel: "EPI family budget",
+          longLabel: "EPI Family Budget (1 parent, 0 children)",
+          axisLabel: "EPI family budget",
+          legendLabel: "EPI family budget",
+          selectedLegendLabel: "Selected university EPI family budget",
+          ratioLabel: "Salary/EPI",
+          link: "https://www.epi.org/resources/budget/budget-map/"
+        };
+      }
+      return {
+        key: "mit",
+        shortLabel: "MIT living wage",
+        longLabel: "MIT Living Wage (1 adult, 0 children)",
+        axisLabel: "MIT living wage",
+        legendLabel: "MIT living wage",
+        selectedLegendLabel: "Selected university MIT living wage",
+        ratioLabel: "Salary/Living ratio",
+        link: "https://livingwage.mit.edu/"
+      };
+    }
+
+    function getLivingValue(row, source = getSelectedLivingSource()) {
+      if (source === "epi") {
+        const state = stateAbbreviation(row.State);
+        const county = slugifyCounty(row.County);
+        const lookup = epiFamilyBudget && epiFamilyBudget.records ? epiFamilyBudget.records : null;
+        const match = lookup && state && county ? lookup[`${state}|${county}`] : null;
+        return match ? parseMoney(match.annual_total) : null;
+      }
+      return parseMoney(row["MIT Living Wage (1 adult, 0 children)"]);
+    }
+
+    function getRatioValue(row, source = getSelectedLivingSource()) {
+      const salary = parseMoney(row["Annual guaranteed salary"]);
+      const living = getLivingValue(row, source);
+      if (salary == null || living == null || living === 0) {
+        return null;
+      }
+      return salary / living;
     }
 
     function formatCurrency(value) {
@@ -2281,6 +2451,7 @@
       if (!matches.length) {
         return null;
       }
+      const source = getSelectedLivingSource();
       const base = matches[0];
       return {
         name: compact(base.University),
@@ -2291,8 +2462,8 @@
         appointmentTerm: compact(base["Appointment term"]),
         graduateUnion: compact(base["Graduate.Union"]),
         salary: mean(matches.map((row) => parseMoney(row["Annual guaranteed salary"])).filter((value) => value != null)),
-        living: mean(matches.map((row) => parseMoney(row["MIT Living Wage (1 adult, 0 children)"])).filter((value) => value != null)),
-        ratio: mean(matches.map((row) => parseMoney(row["Salary/Living"])).filter((value) => value != null))
+        living: mean(matches.map((row) => getLivingValue(row, source)).filter((value) => value != null)),
+        ratio: mean(matches.map((row) => getRatioValue(row, source)).filter((value) => value != null))
       };
     }
 
@@ -2341,8 +2512,7 @@
           const items = [...document.querySelectorAll(".profile-item")];
           document.getElementById("filter-all-similar").checked = items.length > 0 && items.every((entry) => entry.classList.contains("active"));
           if (liveRows.length) {
-            drawSalaryHistogram(liveRows);
-            drawScatter(liveRows);
+            refreshSalaryViews().catch((error) => console.error(error));
           }
         });
         container.appendChild(item);
@@ -2374,6 +2544,14 @@
       return rows.filter((row) => activeFilters.every((field) => compact(row[field]) === profileMap[field]));
     }
 
+    function getComparableRowsForSalary(rows, source = getSelectedLivingSource()) {
+      return getFilteredRowsForSalary(rows).filter((row) => {
+        const salary = parseMoney(row["Annual guaranteed salary"]);
+        const living = getLivingValue(row, source);
+        return salary != null && living != null;
+      });
+    }
+
     function getScatterEncodings() {
       const valuesFor = (role) => [...document.querySelectorAll(`.scatter-encode[data-role="${role}"]:checked`)].map((input) => input.dataset.field);
       return {
@@ -2384,12 +2562,14 @@
 
     function drawSalaryHistogram(rows) {
       const container = document.getElementById("salary-histogram");
-      const selectedUniversity = document.getElementById("university-select").value;
       const mode = getSelectedMode();
+      const source = getSelectedLivingSource();
+      const sourceConfig = getLivingSourceConfig(source);
       const profile = getSelectedUniversityProfile(rows);
-      const filteredRows = getFilteredRowsForSalary(rows);
+      const filteredRows = getComparableRowsForSalary(rows, source);
       const binCount = Number(document.getElementById("bin-count").value);
       container.innerHTML = "";
+      document.getElementById("filter-point-count").textContent = filteredRows.length.toLocaleString("en-US");
 
       updateSelectedProfile(rows);
 
@@ -2397,10 +2577,10 @@
         .map((row) => parseMoney(row["Annual guaranteed salary"]))
         .filter((value) => value != null);
       const livingValues = filteredRows
-        .map((row) => parseMoney(row["MIT Living Wage (1 adult, 0 children)"]))
+        .map((row) => getLivingValue(row, source))
         .filter((value) => value != null);
       const ratioValues = filteredRows
-        .map((row) => parseMoney(row["Salary/Living"]))
+        .map((row) => getRatioValue(row, source))
         .filter((value) => value != null);
 
       if ((mode === "salary" && (!salaryValues.length || !livingValues.length)) || (mode === "ratio" && !ratioValues.length)) {
@@ -2417,30 +2597,34 @@
 
       if (mode === "salary") {
         document.getElementById("salary-mean-label").textContent = "Mean annual salary";
-        document.getElementById("living-mean-label").textContent = "Mean MIT living wage";
+        document.getElementById("living-mean-label").textContent = `Mean ${sourceConfig.shortLabel}`;
         document.getElementById("selected-value-label").textContent = `Selected university salary (${selectedSalary == null ? "-" : `${Math.round(percentile(selectedSalary, salaryValues))}th percentile`})`;
-        document.getElementById("selected-living-label").textContent = "Selected university MIT living wage";
+        document.getElementById("selected-living-label").textContent = `Selected university ${sourceConfig.shortLabel}`;
         document.getElementById("salary-mean").textContent = formatCurrency(salaryMean);
         document.getElementById("living-mean").textContent = formatCurrency(livingMean);
         document.getElementById("selected-salary").textContent = selectedSalary == null ? "-" : formatCurrency(selectedSalary);
         document.getElementById("selected-living").textContent = selectedLiving == null ? "-" : formatCurrency(selectedLiving);
         document.getElementById("legend-primary-text").textContent = "Annual guaranteed salary";
-        document.getElementById("legend-secondary-text").textContent = "MIT living wage";
+        document.getElementById("legend-secondary-text").textContent = sourceConfig.legendLabel;
+        document.getElementById("legend-selected-living-text").textContent = sourceConfig.selectedLegendLabel;
         document.getElementById("legend-secondary").style.visibility = "visible";
-        document.getElementById("salary-chart-description").textContent = "Both distributions are binned on the same dollar scale, with solid lines for salaries and dashed lines for MIT living wage values.";
+        document.getElementById("legend-selected-living-chip").style.display = "";
+        document.getElementById("salary-chart-description").textContent = `Both distributions are binned on the same dollar scale, with solid lines for salaries and dashed lines for ${sourceConfig.legendLabel} values.`;
       } else {
-        document.getElementById("salary-mean-label").textContent = "Mean salary/living ratio";
+        document.getElementById("salary-mean-label").textContent = `Mean ${sourceConfig.ratioLabel.toLowerCase()}`;
         document.getElementById("living-mean-label").textContent = "Secondary comparison";
         document.getElementById("selected-value-label").textContent = `Selected university ratio (${selectedRatio == null ? "-" : `${Math.round(percentile(selectedRatio, ratioValues))}th percentile`})`;
-        document.getElementById("selected-living-label").textContent = "Selected university MIT living wage";
+        document.getElementById("selected-living-label").textContent = `Selected university ${sourceConfig.shortLabel}`;
         document.getElementById("salary-mean").textContent = formatNumber(ratioMean);
         document.getElementById("living-mean").textContent = "-";
         document.getElementById("selected-salary").textContent = selectedRatio == null ? "-" : formatNumber(selectedRatio);
         document.getElementById("selected-living").textContent = "-";
-        document.getElementById("legend-primary-text").textContent = "Salary/Living ratio";
+        document.getElementById("legend-primary-text").textContent = sourceConfig.ratioLabel;
         document.getElementById("legend-secondary-text").textContent = "";
+        document.getElementById("legend-selected-living-text").textContent = sourceConfig.selectedLegendLabel;
         document.getElementById("legend-secondary").style.visibility = "hidden";
-        document.getElementById("salary-chart-description").textContent = "The histogram shows the Salary/Living ratio distribution, with solid lines for the overall mean and selected university value.";
+        document.getElementById("legend-selected-living-chip").style.display = "none";
+        document.getElementById("salary-chart-description").textContent = `The histogram shows the ${sourceConfig.ratioLabel} distribution, with solid lines for the overall mean and selected university value.`;
       }
 
       const domainValues = mode === "salary" ? [...salaryValues, ...livingValues] : ratioValues;
@@ -2628,7 +2812,7 @@
       xTitle.setAttribute("text-anchor", "middle");
       xTitle.setAttribute("fill", "#6d625b");
       xTitle.setAttribute("font-size", "13");
-      xTitle.textContent = mode === "salary" ? "Annual dollars" : "Salary/Living ratio";
+      xTitle.textContent = mode === "salary" ? "Annual dollars" : sourceConfig.ratioLabel;
       svg.appendChild(xTitle);
 
       const yTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -2647,6 +2831,8 @@
     function drawScatter(rows) {
       const container = document.getElementById("salary-scatter");
       const tooltip = document.getElementById("scatter-tooltip");
+      const source = getSelectedLivingSource();
+      const sourceConfig = getLivingSourceConfig(source);
       container.innerHTML = "";
       tooltip.style.opacity = "0";
 
@@ -2654,10 +2840,10 @@
         window.Plotly.purge(container);
       }
 
-      const filteredRows = getFilteredRowsForSalary(rows)
+      const filteredRows = getComparableRowsForSalary(rows, source)
         .map((row) => ({
           row,
-          x: parseMoney(row["MIT Living Wage (1 adult, 0 children)"]),
+          x: getLivingValue(row, source),
           y: parseMoney(row["Annual guaranteed salary"])
         }))
         .filter((entry) => entry.x != null && entry.y != null);
@@ -2800,7 +2986,7 @@
             "Appointment term: %{customdata[6]}<br>" +
             "Graduate Union: %{customdata[7]}<br>" +
             "Salary: %{customdata[8]}<br>" +
-            "MIT living wage: %{customdata[9]}<extra></extra>",
+            `${sourceConfig.axisLabel}: %{customdata[9]}<extra></extra>`,
           showlegend: false
         });
       });
@@ -2839,7 +3025,7 @@
             "Appointment term: %{customdata[6]}<br>" +
             "Graduate Union: %{customdata[7]}<br>" +
             "Salary: %{customdata[8]}<br>" +
-            "MIT living wage: %{customdata[9]}<extra></extra>",
+            `${sourceConfig.axisLabel}: %{customdata[9]}<extra></extra>`,
           showlegend: false
         });
       }
@@ -2884,7 +3070,7 @@
           align: "left"
         },
         xaxis: {
-          title: "MIT living wage",
+          title: sourceConfig.axisLabel,
           range: [rangeMin, rangeMax],
           tickformat: "$~s",
           gridcolor: "#d7e3f0",
@@ -2912,84 +3098,29 @@
 
     async function drawFaqPhdComparison(rows) {
       const container = document.getElementById("faq-phd-comparison");
+      const debug = document.getElementById("faq-phd-debug");
       if (!container || phdComparisonLoaded) {
         return;
       }
       container.innerHTML = '<div class="empty-state">Loading PhD Stipends comparison...</div>';
+      if (debug) {
+        debug.textContent = "Loading PhD Stipends comparison...";
+      }
 
       try {
         let comparisonRows;
         try {
-          const csvText = await fetchTextWithFallback([
-            PHD_STIPENDS_PROXY_URL,
-            PHD_STIPENDS_CSV_URL,
-            ...PHD_STIPENDS_CSV_FALLBACK_URLS
+          comparisonRows = await fetchJsonWithFallback([
+            PHD_STIPENDS_COMPARISON_URL
           ]);
-          const phdRows = parseCsv(csvText)
-            .map((row) => {
-              const overallPay = parseMoney(row["Overall.Pay"] || row["Overall Pay"]);
-              const fees = parseMoney(row.Fees);
-              return {
-                university: compact((row.University || "").replace(/\s\(.*$/, "").replace(/\s-\sSUNY$/i, "").trim()),
-                department: compact(row.Department),
-                comments: compact(row.Comments),
-                academicYear: compact(row["Academic.Year"] || row["Academic Year"]),
-                overallPayAdjusted: overallPay == null ? null : overallPay + (fees || 0)
-              };
-            })
-            .filter((row) =>
-              row.university &&
-              row.department &&
-              row.overallPayAdjusted != null &&
-              row.overallPayAdjusted > 100 &&
-              ["2024-2025", "2023-2024", "2022-2023", "2021-2022", "2020-2021", "2019-2020"].includes(row.academicYear) &&
-              !/(MS |M\.S\.|Masters|master|masters|Master| ms)/.test(row.comments)
-            );
-
-          const localRows = rows
-            .map((row) => ({
-              university: compact(row.University_ID),
-              department: compact(row.Department),
-              annualSalary: parseMoney(row["Annual guaranteed salary"])
-            }))
-            .filter((row) => row.university && row.department && row.annualSalary != null);
-
-          const localKeyMap = new Map();
-          localRows.forEach((row) => {
-            const key = `${row.university}||${row.department}`;
-            if (!localKeyMap.has(key)) {
-              localKeyMap.set(key, []);
-            }
-            localKeyMap.get(key).push(row.annualSalary);
-          });
-
-          const byUniversityDepartment = new Map();
-          phdRows.forEach((row) => {
-            const key = `${row.university}||${row.department}`;
-            const salaryMatches = localKeyMap.get(key);
-            if (!salaryMatches || !salaryMatches.length) {
-              return;
-            }
-            const differences = salaryMatches.map((salary) => row.overallPayAdjusted - salary);
-            if (!byUniversityDepartment.has(key)) {
-              byUniversityDepartment.set(key, []);
-            }
-            byUniversityDepartment.get(key).push(...differences);
-          });
-
-          comparisonRows = [...byUniversityDepartment.entries()]
-            .map(([key, values]) => {
-              const [university, department] = key.split("||");
-              return {
-                label: `${university} - ${department}`,
-                mean: mean(values),
-                type: mean(values) >= 0 ? "positive" : "negative"
-              };
-            })
-            .filter((row) => row.mean != null)
-            .sort((a, b) => b.mean - a.mean);
+          if (debug) {
+            debug.textContent = `PhD comparison source: live proxy JSON. Rows matched: ${comparisonRows.length}.`;
+          }
         } catch (liveError) {
           comparisonRows = await fetchJsonWithFallback([PHD_COMPARISON_CACHE_URL]);
+          if (debug) {
+            debug.textContent = `PhD comparison source: local cache JSON. Rows matched: ${comparisonRows.length}.`;
+          }
         }
 
         faqPhdComparisonRows = comparisonRows;
@@ -3043,6 +3174,45 @@
         middleLabel: "Distance from Living Wage"
       });
       faqDistanceLoaded = true;
+    }
+
+    async function drawFaqEpiDistance(rows) {
+      const container = document.getElementById("faq-epi-distance");
+      if (!container || faqEpiLoaded) {
+        return;
+      }
+
+      await ensureEpiFamilyBudget();
+
+      const comparisonRows = rows
+        .map((row) => {
+          const university = compact(row.University_ID) || compact(row.University);
+          const department = compact(row.Department);
+          const salary = parseMoney(row["Annual guaranteed salary"]);
+          const living = getLivingValue(row, "epi");
+          if (!university || !department || salary == null || living == null) {
+            return null;
+          }
+          const difference = salary - living;
+          return {
+            label: `${university} - ${department}`,
+            mean: difference,
+            type: difference >= 0 ? "positive" : "negative"
+          };
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.mean - a.mean);
+
+      faqEpiDistanceRows = comparisonRows;
+      if (!comparisonRows.length) {
+        container.innerHTML = '<div class="empty-state">No salary and EPI family budget overlap is available.</div>';
+        return;
+      }
+      renderFaqComparisonTable(container, comparisonRows, document.getElementById("faq-epi-filter")?.value || "", {
+        leftLabel: "University - Department",
+        middleLabel: "Distance from EPI Family Budget"
+      });
+      faqEpiLoaded = true;
     }
 
     function renderFaqComparisonTable(container, rows, filterValue, labels) {
@@ -3212,6 +3382,15 @@
       setStatus(`Loaded ${rows.length.toLocaleString("en-US")} live rows from the Google Sheet.`);
     }
 
+    async function refreshSalaryViews() {
+      if (!liveRows.length) {
+        return;
+      }
+      await ensureLivingSourceData(getSelectedLivingSource());
+      drawSalaryHistogram(liveRows);
+      drawScatter(liveRows);
+    }
+
     function activateTab(tabName) {
       document.querySelectorAll(".tab-button").forEach((button) => {
         button.classList.toggle("active", button.dataset.tab === tabName);
@@ -3225,13 +3404,20 @@
       }
 
       if (tabName === "salaries") {
-        drawSalaryHistogram(liveRows);
-        drawScatter(liveRows);
+        refreshSalaryViews().catch((error) => {
+          console.error(error);
+          document.getElementById("salary-histogram").innerHTML = '<div class="empty-state">The salary histogram could not be rendered.</div>';
+          document.getElementById("salary-scatter").innerHTML = '<div class="empty-state">The salary scatter plot could not be rendered.</div>';
+        });
       }
 
       if (tabName === "faq") {
         drawFaqPhdComparison(liveRows);
         drawFaqLivingDistance(liveRows);
+        drawFaqEpiDistance(liveRows).catch((error) => {
+          console.error(error);
+          document.getElementById("faq-epi-distance").innerHTML = '<div class="empty-state">The EPI comparison plot could not be loaded right now.</div>';
+        });
       }
 
       if (tabName === "overview") {
@@ -3247,22 +3433,31 @@
 
       document.getElementById("university-select").addEventListener("change", () => {
         if (liveRows.length) {
-          drawSalaryHistogram(liveRows);
-          drawScatter(liveRows);
+          refreshSalaryViews().catch((error) => console.error(error));
         }
       });
       document.getElementById("university-select").addEventListener("input", () => {
         if (liveRows.length) {
-          drawSalaryHistogram(liveRows);
-          drawScatter(liveRows);
+          refreshSalaryViews().catch((error) => console.error(error));
         }
       });
 
       document.querySelectorAll('input[name="salary-mode"]').forEach((input) => {
         input.addEventListener("change", () => {
           if (liveRows.length) {
-            drawSalaryHistogram(liveRows);
-            drawScatter(liveRows);
+            refreshSalaryViews().catch((error) => console.error(error));
+          }
+        });
+      });
+
+      document.querySelectorAll('input[name="living-source"]').forEach((input) => {
+        input.addEventListener("change", () => {
+          if (liveRows.length) {
+            refreshSalaryViews().catch((error) => {
+              console.error(error);
+              document.getElementById("salary-histogram").innerHTML = '<div class="empty-state">The selected living-cost source could not be loaded.</div>';
+              document.getElementById("salary-scatter").innerHTML = '<div class="empty-state">The selected living-cost source could not be loaded.</div>';
+            });
           }
         });
       });
@@ -3270,8 +3465,7 @@
       document.getElementById("bin-count").addEventListener("input", (event) => {
         document.getElementById("bin-count-value").textContent = event.target.value;
         if (liveRows.length) {
-          drawSalaryHistogram(liveRows);
-          drawScatter(liveRows);
+          refreshSalaryViews().catch((error) => console.error(error));
         }
       });
 
@@ -3280,15 +3474,14 @@
           item.classList.toggle("active", event.target.checked);
         });
         if (liveRows.length) {
-          drawSalaryHistogram(liveRows);
-          drawScatter(liveRows);
+          refreshSalaryViews().catch((error) => console.error(error));
         }
       });
 
       document.querySelectorAll(".scatter-encode").forEach((input) => {
         input.addEventListener("change", () => {
           if (liveRows.length) {
-            drawScatter(liveRows);
+            refreshSalaryViews().catch((error) => console.error(error));
           }
         });
       });
@@ -3314,6 +3507,19 @@
             renderFaqComparisonTable(container, faqLivingDistanceRows, faqLivingFilter.value, {
               leftLabel: "University - Department",
               middleLabel: "Distance from Living Wage"
+            });
+          }
+        });
+      }
+
+      const faqEpiFilter = document.getElementById("faq-epi-filter");
+      if (faqEpiFilter) {
+        faqEpiFilter.addEventListener("input", () => {
+          const container = document.getElementById("faq-epi-distance");
+          if (container && faqEpiDistanceRows.length) {
+            renderFaqComparisonTable(container, faqEpiDistanceRows, faqEpiFilter.value, {
+              leftLabel: "University - Department",
+              middleLabel: "Distance from EPI Family Budget"
             });
           }
         });
@@ -3359,16 +3565,10 @@
         }
 
         try {
-          drawSalaryHistogram(liveRows);
+          await refreshSalaryViews();
         } catch (error) {
           console.error(error);
           document.getElementById("salary-histogram").innerHTML = '<div class="empty-state">The salary histogram could not be rendered.</div>';
-        }
-
-        try {
-          drawScatter(liveRows);
-        } catch (error) {
-          console.error(error);
           document.getElementById("salary-scatter").innerHTML = '<div class="empty-state">The salary scatter plot could not be rendered.</div>';
         }
       } catch (error) {
