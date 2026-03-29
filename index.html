@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C95PJVBTJJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-C95PJVBTJJ');
+  </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Biology PhD Stipends</title>
@@ -1468,7 +1477,7 @@
 
           <article class="panel text-panel">
             <h3>How do the data collected here compare to the PhD Stipends database?</h3>
-            <p>The <a href="https://www.phdstipends.com/" target="_blank" rel="noreferrer">PhD Stipends database</a> has 564 observations for Universities and Departments included in our dataset and reported for 2019-2025. This database reports overall pay as the sum of 12 month, 9 month, and 3 month reported income minus the cost of fees. Since we do not account for fees in our dataset, we adjusted the overall pay to be equal to overall pay plus fees.</p>
+            <p>The <a href="https://www.phdstipends.com/" target="_blank" rel="noreferrer">PhD Stipends database</a> has observations for universities and departments included in our dataset and reported for 2019-2026. This database reports overall pay as the sum of 12 month, 9 month, and 3 month reported income minus the cost of fees. Since we do not account for fees in our dataset, we adjusted the overall pay to be equal to overall pay plus fees.</p>
             <p>Here we show the mean difference between the <a href="https://www.phdstipends.com/" target="_blank" rel="noreferrer">PhD Stipends database</a> adjusted overall pay and our annual guaranteed salary. Positive values most likely represent summer appointments, fellowships, or other opportunities that would increase overall salaries. Negative values may represent recently increased salaries, however these may be incorrectly reported salaries or may represent master student's salary.</p>
             <div class="control-row" style="margin-top: 1rem; max-width: 28rem;">
               <label for="faq-phd-filter">Filter by university</label>
@@ -1645,9 +1654,9 @@
     const PHD_STIPENDS_CSV_URL = "https://www.phdstipends.com/csv";
     const PHD_STIPENDS_PROXY_URL = "./phdstipends-live.csv";
     const PHD_STIPENDS_COMPARISON_URL = "./phdstipends-comparison.json";
+    const PHD_STIPENDS_COMPARISON_STATIC_URL = "./extra_data/phdstipends-comparison.static.json";
     const EPI_FAMILY_BUDGET_URL = "./epi-family-budget.json";
-    const PHD_STIPENDS_LOCAL_URL = "./phdstipends.csv";
-    const PHD_COMPARISON_CACHE_URL = "./phd_comparison_cache.json";
+    const EPI_FAMILY_BUDGET_STATIC_URL = "./extra_data/epi-family-budget.static.json";
     const PHD_STIPENDS_CSV_FALLBACK_URLS = [
       `https://api.allorigins.win/raw?url=${encodeURIComponent(PHD_STIPENDS_CSV_URL)}`,
       `https://cors.isomorphic-git.org/${PHD_STIPENDS_CSV_URL}`
@@ -1790,13 +1799,7 @@
         return epiFamilyBudget;
       }
       if (!epiFamilyBudgetPromise) {
-        epiFamilyBudgetPromise = fetch(EPI_FAMILY_BUDGET_URL)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`EPI request failed with status ${response.status}`);
-            }
-            return response.json();
-          })
+        epiFamilyBudgetPromise = fetchJsonWithFallback([EPI_FAMILY_BUDGET_URL, EPI_FAMILY_BUDGET_STATIC_URL])
           .then((payload) => {
             epiFamilyBudget = payload;
             return payload;
@@ -1986,7 +1989,11 @@
           if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`);
           }
-          return await response.json();
+          const payload = await response.json();
+          if (payload && typeof payload === "object") {
+            payload.__fetchedUrl = url;
+          }
+          return payload;
         } catch (error) {
           lastError = error;
         }
@@ -3111,18 +3118,20 @@
         let comparisonRows;
         try {
           comparisonRows = await fetchJsonWithFallback([
-            PHD_STIPENDS_COMPARISON_URL
+            PHD_STIPENDS_COMPARISON_URL,
+            PHD_STIPENDS_COMPARISON_STATIC_URL
           ]);
+          const fetchedUrl = comparisonRows && comparisonRows.__fetchedUrl ? comparisonRows.__fetchedUrl : "";
+          if (comparisonRows && comparisonRows.rows && Array.isArray(comparisonRows.rows)) {
+            comparisonRows = comparisonRows.rows;
+          }
           if (debug) {
-            debug.textContent = `PhD comparison source: live proxy JSON. Rows matched: ${comparisonRows.length}.`;
+            const isStatic = fetchedUrl.includes(".static.json");
+            debug.textContent = `PhD comparison source: ${isStatic ? "static JSON" : "live proxy JSON"}. Rows matched: ${comparisonRows.length}.`;
           }
         } catch (liveError) {
-          comparisonRows = await fetchJsonWithFallback([PHD_COMPARISON_CACHE_URL]);
-          if (debug) {
-            debug.textContent = `PhD comparison source: local cache JSON. Rows matched: ${comparisonRows.length}.`;
-          }
+          throw liveError;
         }
-
         faqPhdComparisonRows = comparisonRows;
         if (!comparisonRows.length) {
           container.innerHTML = '<div class="empty-state">No overlapping PhD Stipends comparison rows could be matched.</div>';

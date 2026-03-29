@@ -135,7 +135,7 @@ def build_phd_comparison():
         local_rows.setdefault(key, []).append(salary)
 
     comparison = {}
-    valid_years = {"2024-2025", "2023-2024", "2022-2023", "2021-2022", "2020-2021", "2019-2020"}
+    valid_years = {"2025-2026", "2024-2025", "2023-2024", "2022-2023", "2021-2022", "2020-2021", "2019-2020"}
     master_pattern = re.compile(r"(MS |M\.S\.|Masters|master|masters|Master| ms)")
 
     for row in phd_rows:
