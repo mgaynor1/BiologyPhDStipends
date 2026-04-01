@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-03-29T17:44:42.306867+00:00",
+  "updated_at": "2026-04-01T10:17:31.452110+00:00",
   "rows": [
     {
       "label": "University of North Texas - Biology",
@@ -202,11 +202,6 @@
       "type": "negative"
     },
     {
-      "label": "University of New Mexico - Biology",
-      "mean": -3049.0999999999985,
-      "type": "negative"
-    },
-    {
       "label": "Northeastern University - Marine and Environmental Sciences",
       "mean": -3244.0,
       "type": "negative"
@@ -229,6 +224,11 @@
     {
       "label": "University of Iowa - Biology",
       "mean": -4032.0,
+      "type": "negative"
+    },
+    {
+      "label": "University of New Mexico - Biology",
+      "mean": -4129.200000000001,
       "type": "negative"
     },
     {
