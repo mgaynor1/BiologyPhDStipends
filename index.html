@@ -297,6 +297,8 @@
 
     .viz-frame {
       width: 100%;
+      max-width: 100%;
+      min-width: 0;
       min-height: 360px;
       border-radius: 18px;
       background:
@@ -361,6 +363,8 @@
       display: grid;
       gap: 1.5rem;
       padding-top: 1.5rem;
+      width: 100%;
+      min-width: 0;
     }
 
     .salary-top {
@@ -368,6 +372,8 @@
       grid-template-columns: 1.2fr 0.8fr;
       gap: 1.5rem;
       align-items: start;
+      width: 100%;
+      min-width: 0;
     }
 
     .salary-controls,
@@ -506,10 +512,15 @@
     .text-stack {
       display: grid;
       gap: 1.25rem;
+      width: 100%;
+      min-width: 0;
     }
 
     .text-panel {
       padding: 1.35rem 1.4rem;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
     }
 
     .text-panel h2,
@@ -532,6 +543,13 @@
 
     .text-panel li + li {
       margin-top: 0.45rem;
+    }
+
+    .text-panel pre {
+      max-width: 100%;
+      overflow: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
     }
 
     .support-button {
@@ -570,7 +588,7 @@
       display: grid;
       gap: 0.4rem;
       padding: 0.8rem;
-      min-width: 900px;
+      min-width: 0;
     }
 
     .faq-comparison-header,
@@ -655,6 +673,9 @@
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
+      max-width: 100%;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
     .legend-swatch {
@@ -679,11 +700,17 @@
 
     .salary-chart-panel {
       padding: 1.25rem;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
     }
 
     .salary-filter-panel,
     .salary-encoding-panel {
       padding: 1.25rem;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
     }
 
     .filter-top {
@@ -803,6 +830,16 @@
       grid-template-columns: minmax(360px, 1.15fr) minmax(260px, 0.85fr);
       gap: 1rem;
       align-items: start;
+    }
+
+    .encoding-layout > *,
+    .salary-top > *,
+    .viz-frame,
+    .post-chart-summary,
+    .legend-stack,
+    #scatter-color-legend,
+    #scatter-shape-legend {
+      min-width: 0;
     }
 
     .shape-swatch {
@@ -1020,8 +1057,38 @@
     }
 
     @media (max-width: 860px) {
+      .page {
+        width: min(100%, calc(100% - 1rem));
+        padding: 1rem 0 2.5rem;
+      }
+
+      .hero {
+        padding: 1rem 0 0.75rem;
+      }
+
+      .tabs {
+        gap: 0.5rem;
+      }
+
+      .tab-button {
+        padding: 0.55rem 0.85rem;
+        font-size: 0.9rem;
+      }
+
       .intro {
         grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem 0 1.5rem;
+      }
+
+      .intro-copy,
+      .stats,
+      .salary-controls,
+      .salary-filter-panel,
+      .salary-chart-panel,
+      .salary-encoding-panel,
+      .text-panel {
+        padding: 1rem;
       }
 
       .viz-header {
@@ -1081,9 +1148,191 @@
         gap: 0.45rem;
       }
 
+      .faq-comparison {
+        min-width: 0;
+      }
+
+      .faq-comparison-header,
+      .faq-comparison-row {
+        grid-template-columns: minmax(180px, 1.2fr) minmax(320px, 2fr) 84px;
+        gap: 0.7rem;
+      }
+
       .bar-row {
         grid-template-columns: 1fr;
         gap: 0.35rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        line-height: 1.5;
+      }
+
+      .page {
+        width: calc(100% - 0.75rem);
+        padding: 0.75rem 0 2rem;
+      }
+
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .tab-button {
+        width: 100%;
+        text-align: center;
+      }
+
+      .eyebrow {
+        font-size: 0.72rem;
+      }
+
+      .byline {
+        font-size: 0.92rem;
+      }
+
+      .intro-copy h2,
+      .visuals h2,
+      .text-panel h2,
+      .text-panel h3 {
+        font-size: 1.2rem;
+      }
+
+      .status {
+        padding: 0.75rem 0.85rem;
+        font-size: 0.88rem;
+      }
+
+      #wordcloud,
+      #us-map,
+      .cloud-wrap,
+      .cloud-wrap canvas,
+      .cloud-fallback {
+        min-height: 320px;
+        height: 320px;
+      }
+
+      .bar-row {
+        grid-template-columns: minmax(96px, 1fr) minmax(0, 1.5fr) auto;
+        gap: 0.45rem;
+      }
+
+      .bar-label,
+      .bar-value {
+        font-size: 0.82rem;
+      }
+
+      .control-row label,
+      .salary-note,
+      .legend-row,
+      .filter-meta {
+        font-size: 0.84rem;
+      }
+
+      .control-row input[type="search"],
+      .control-row select,
+      .segmented label {
+        font-size: 0.88rem;
+      }
+
+      .segmented label {
+        padding: 0.62rem 0.55rem;
+      }
+
+      .salary-metric-value {
+        font-size: 1.15rem;
+      }
+
+      .salary-metric-sub .salary-metric-value {
+        font-size: 0.95rem;
+      }
+
+      #salary-histogram {
+        min-height: 360px;
+      }
+
+      #salary-scatter {
+        min-height: 340px;
+      }
+
+      .scatter-stat {
+        padding: 0.7rem 0.75rem;
+      }
+
+      .scatter-stat-label,
+      .scatter-stat-value {
+        font-size: 0.86rem;
+      }
+
+      .profile-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .profile-item {
+        padding: 0.5rem 0.55rem;
+      }
+
+      .profile-label {
+        font-size: 0.7rem;
+      }
+
+      .profile-value {
+        font-size: 0.8rem;
+      }
+
+      .legend-row {
+        gap: 0.6rem;
+      }
+
+      .legend-chip {
+        align-items: flex-start;
+      }
+
+      .dataset-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .viz-frame {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .dataset-table th,
+      .dataset-table td {
+        padding: 0.62rem 0.65rem;
+        font-size: 0.84rem;
+      }
+
+      .faq-comparison {
+        min-width: 0;
+        padding: 0.65rem;
+      }
+
+      .faq-comparison-header {
+        display: none;
+      }
+
+      .faq-comparison-row {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+        padding: 0.55rem 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .faq-comparison-label,
+      .faq-comparison-value {
+        font-size: 0.75rem;
+      }
+
+      .faq-comparison-value {
+        text-align: left;
+      }
+
+      .faq-comparison-track {
+        height: 16px;
       }
     }
   </style>
@@ -2942,7 +3191,7 @@
       const selectedUniversity = document.getElementById("university-select").value;
       const unselectedRows = filteredRows.filter((entry) => compact(entry.row.University) !== selectedUniversity);
       const selectedRows = filteredRows.filter((entry) => compact(entry.row.University) === selectedUniversity);
-      const plotSize = Math.max(640, container.clientWidth || 640);
+      const plotSize = Math.max(280, container.clientWidth || 280);
       const minX = Math.min(...filteredRows.map((entry) => entry.x));
       const maxX = Math.max(...filteredRows.map((entry) => entry.x));
       const minY = Math.min(...filteredRows.map((entry) => entry.y));
