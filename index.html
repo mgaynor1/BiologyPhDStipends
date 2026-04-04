@@ -972,6 +972,11 @@
       flex: 0 0 auto;
     }
 
+    .info-bubble.open {
+      background: #d9e7ff;
+      border-color: #4b77c8;
+    }
+
     .info-bubble-text {
       position: absolute;
       right: calc(100% + 10px);
@@ -985,7 +990,7 @@
       font-size: 0.78rem;
       line-height: 1.35;
       opacity: 0;
-      pointer-events: auto;
+      pointer-events: none;
       transition: opacity 120ms ease;
       z-index: 8;
       text-transform: none;
@@ -995,11 +1000,9 @@
       box-shadow: 0 10px 24px rgba(20, 32, 54, 0.22);
     }
 
-    .info-bubble:hover .info-bubble-text,
-    .info-bubble:focus-visible .info-bubble-text,
-    .info-bubble-text:hover,
-    .info-bubble-text:focus-within {
+    .info-bubble.open .info-bubble-text {
       opacity: 1;
+      pointer-events: auto;
     }
 
     .info-bubble-text a {
@@ -2502,11 +2505,28 @@
         item.innerHTML = `<span class="profile-label">${labelText}${infoBubble}</span><span class="profile-value">${value || "-"}</span>`;
         const bubble = item.querySelector(".info-bubble");
         if (bubble) {
+          bubble.setAttribute("role", "button");
+          bubble.setAttribute("aria-expanded", "false");
           bubble.addEventListener("click", (event) => {
             event.stopPropagation();
+            const willOpen = !bubble.classList.contains("open");
+            document.querySelectorAll(".info-bubble.open").forEach((entry) => {
+              entry.classList.remove("open");
+              entry.setAttribute("aria-expanded", "false");
+            });
+            if (willOpen) {
+              bubble.classList.add("open");
+              bubble.setAttribute("aria-expanded", "true");
+            }
           });
           bubble.addEventListener("mousedown", (event) => {
             event.stopPropagation();
+          });
+          bubble.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              bubble.click();
+            }
           });
           bubble.querySelectorAll("a").forEach((link) => {
             link.addEventListener("click", (event) => {
@@ -3436,6 +3456,13 @@
     }
 
     function bindUi() {
+      document.addEventListener("click", () => {
+        document.querySelectorAll(".info-bubble.open").forEach((entry) => {
+          entry.classList.remove("open");
+          entry.setAttribute("aria-expanded", "false");
+        });
+      });
+
       document.querySelectorAll(".tab-button").forEach((button) => {
         button.addEventListener("click", () => activateTab(button.dataset.tab));
       });
