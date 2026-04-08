@@ -297,6 +297,8 @@
 
     .viz-frame {
       width: 100%;
+      max-width: 100%;
+      min-width: 0;
       min-height: 360px;
       border-radius: 18px;
       background:
@@ -361,6 +363,8 @@
       display: grid;
       gap: 1.5rem;
       padding-top: 1.5rem;
+      width: 100%;
+      min-width: 0;
     }
 
     .salary-top {
@@ -368,6 +372,8 @@
       grid-template-columns: 1.2fr 0.8fr;
       gap: 1.5rem;
       align-items: start;
+      width: 100%;
+      min-width: 0;
     }
 
     .salary-controls,
@@ -506,10 +512,15 @@
     .text-stack {
       display: grid;
       gap: 1.25rem;
+      width: 100%;
+      min-width: 0;
     }
 
     .text-panel {
       padding: 1.35rem 1.4rem;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
     }
 
     .text-panel h2,
@@ -532,6 +543,13 @@
 
     .text-panel li + li {
       margin-top: 0.45rem;
+    }
+
+    .text-panel pre {
+      max-width: 100%;
+      overflow: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
     }
 
     .support-button {
@@ -570,7 +588,7 @@
       display: grid;
       gap: 0.4rem;
       padding: 0.8rem;
-      min-width: 900px;
+      min-width: 0;
     }
 
     .faq-comparison-header,
@@ -655,6 +673,9 @@
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
+      max-width: 100%;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
     .legend-swatch {
@@ -679,11 +700,17 @@
 
     .salary-chart-panel {
       padding: 1.25rem;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
     }
 
     .salary-filter-panel,
     .salary-encoding-panel {
       padding: 1.25rem;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
     }
 
     .filter-top {
@@ -803,6 +830,16 @@
       grid-template-columns: minmax(360px, 1.15fr) minmax(260px, 0.85fr);
       gap: 1rem;
       align-items: start;
+    }
+
+    .encoding-layout > *,
+    .salary-top > *,
+    .viz-frame,
+    .post-chart-summary,
+    .legend-stack,
+    #scatter-color-legend,
+    #scatter-shape-legend {
+      min-width: 0;
     }
 
     .shape-swatch {
@@ -972,11 +1009,16 @@
       flex: 0 0 auto;
     }
 
+    .info-bubble.open {
+      background: #d9e7ff;
+      border-color: #4b77c8;
+    }
+
     .info-bubble-text {
       position: absolute;
-      left: 50%;
-      bottom: calc(100% + 8px);
-      transform: translateX(-50%);
+      right: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%);
       width: 250px;
       padding: 0.65rem 0.75rem;
       border-radius: 10px;
@@ -985,7 +1027,7 @@
       font-size: 0.78rem;
       line-height: 1.35;
       opacity: 0;
-      pointer-events: auto;
+      pointer-events: none;
       transition: opacity 120ms ease;
       z-index: 8;
       text-transform: none;
@@ -995,11 +1037,9 @@
       box-shadow: 0 10px 24px rgba(20, 32, 54, 0.22);
     }
 
-    .info-bubble:hover .info-bubble-text,
-    .info-bubble:focus-visible .info-bubble-text,
-    .info-bubble-text:hover,
-    .info-bubble-text:focus-within {
+    .info-bubble.open .info-bubble-text {
       opacity: 1;
+      pointer-events: auto;
     }
 
     .info-bubble-text a {
@@ -1017,8 +1057,38 @@
     }
 
     @media (max-width: 860px) {
+      .page {
+        width: min(100%, calc(100% - 1rem));
+        padding: 1rem 0 2.5rem;
+      }
+
+      .hero {
+        padding: 1rem 0 0.75rem;
+      }
+
+      .tabs {
+        gap: 0.5rem;
+      }
+
+      .tab-button {
+        padding: 0.55rem 0.85rem;
+        font-size: 0.9rem;
+      }
+
       .intro {
         grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem 0 1.5rem;
+      }
+
+      .intro-copy,
+      .stats,
+      .salary-controls,
+      .salary-filter-panel,
+      .salary-chart-panel,
+      .salary-encoding-panel,
+      .text-panel {
+        padding: 1rem;
       }
 
       .viz-header {
@@ -1078,9 +1148,191 @@
         gap: 0.45rem;
       }
 
+      .faq-comparison {
+        min-width: 0;
+      }
+
+      .faq-comparison-header,
+      .faq-comparison-row {
+        grid-template-columns: minmax(180px, 1.2fr) minmax(320px, 2fr) 84px;
+        gap: 0.7rem;
+      }
+
       .bar-row {
         grid-template-columns: 1fr;
         gap: 0.35rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        line-height: 1.5;
+      }
+
+      .page {
+        width: calc(100% - 0.75rem);
+        padding: 0.75rem 0 2rem;
+      }
+
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .tab-button {
+        width: 100%;
+        text-align: center;
+      }
+
+      .eyebrow {
+        font-size: 0.72rem;
+      }
+
+      .byline {
+        font-size: 0.92rem;
+      }
+
+      .intro-copy h2,
+      .visuals h2,
+      .text-panel h2,
+      .text-panel h3 {
+        font-size: 1.2rem;
+      }
+
+      .status {
+        padding: 0.75rem 0.85rem;
+        font-size: 0.88rem;
+      }
+
+      #wordcloud,
+      #us-map,
+      .cloud-wrap,
+      .cloud-wrap canvas,
+      .cloud-fallback {
+        min-height: 320px;
+        height: 320px;
+      }
+
+      .bar-row {
+        grid-template-columns: minmax(96px, 1fr) minmax(0, 1.5fr) auto;
+        gap: 0.45rem;
+      }
+
+      .bar-label,
+      .bar-value {
+        font-size: 0.82rem;
+      }
+
+      .control-row label,
+      .salary-note,
+      .legend-row,
+      .filter-meta {
+        font-size: 0.84rem;
+      }
+
+      .control-row input[type="search"],
+      .control-row select,
+      .segmented label {
+        font-size: 0.88rem;
+      }
+
+      .segmented label {
+        padding: 0.62rem 0.55rem;
+      }
+
+      .salary-metric-value {
+        font-size: 1.15rem;
+      }
+
+      .salary-metric-sub .salary-metric-value {
+        font-size: 0.95rem;
+      }
+
+      #salary-histogram {
+        min-height: 360px;
+      }
+
+      #salary-scatter {
+        min-height: 340px;
+      }
+
+      .scatter-stat {
+        padding: 0.7rem 0.75rem;
+      }
+
+      .scatter-stat-label,
+      .scatter-stat-value {
+        font-size: 0.86rem;
+      }
+
+      .profile-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .profile-item {
+        padding: 0.5rem 0.55rem;
+      }
+
+      .profile-label {
+        font-size: 0.7rem;
+      }
+
+      .profile-value {
+        font-size: 0.8rem;
+      }
+
+      .legend-row {
+        gap: 0.6rem;
+      }
+
+      .legend-chip {
+        align-items: flex-start;
+      }
+
+      .dataset-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .viz-frame {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .dataset-table th,
+      .dataset-table td {
+        padding: 0.62rem 0.65rem;
+        font-size: 0.84rem;
+      }
+
+      .faq-comparison {
+        min-width: 0;
+        padding: 0.65rem;
+      }
+
+      .faq-comparison-header {
+        display: none;
+      }
+
+      .faq-comparison-row {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+        padding: 0.55rem 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .faq-comparison-label,
+      .faq-comparison-value {
+        font-size: 0.75rem;
+      }
+
+      .faq-comparison-value {
+        text-align: left;
+      }
+
+      .faq-comparison-track {
+        height: 16px;
       }
     }
   </style>
@@ -2502,11 +2754,28 @@
         item.innerHTML = `<span class="profile-label">${labelText}${infoBubble}</span><span class="profile-value">${value || "-"}</span>`;
         const bubble = item.querySelector(".info-bubble");
         if (bubble) {
+          bubble.setAttribute("role", "button");
+          bubble.setAttribute("aria-expanded", "false");
           bubble.addEventListener("click", (event) => {
             event.stopPropagation();
+            const willOpen = !bubble.classList.contains("open");
+            document.querySelectorAll(".info-bubble.open").forEach((entry) => {
+              entry.classList.remove("open");
+              entry.setAttribute("aria-expanded", "false");
+            });
+            if (willOpen) {
+              bubble.classList.add("open");
+              bubble.setAttribute("aria-expanded", "true");
+            }
           });
           bubble.addEventListener("mousedown", (event) => {
             event.stopPropagation();
+          });
+          bubble.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              bubble.click();
+            }
           });
           bubble.querySelectorAll("a").forEach((link) => {
             link.addEventListener("click", (event) => {
@@ -2922,7 +3191,7 @@
       const selectedUniversity = document.getElementById("university-select").value;
       const unselectedRows = filteredRows.filter((entry) => compact(entry.row.University) !== selectedUniversity);
       const selectedRows = filteredRows.filter((entry) => compact(entry.row.University) === selectedUniversity);
-      const plotSize = Math.max(640, container.clientWidth || 640);
+      const plotSize = Math.max(280, container.clientWidth || 280);
       const minX = Math.min(...filteredRows.map((entry) => entry.x));
       const maxX = Math.max(...filteredRows.map((entry) => entry.x));
       const minY = Math.min(...filteredRows.map((entry) => entry.y));
@@ -3436,6 +3705,13 @@
     }
 
     function bindUi() {
+      document.addEventListener("click", () => {
+        document.querySelectorAll(".info-bubble.open").forEach((entry) => {
+          entry.classList.remove("open");
+          entry.setAttribute("aria-expanded", "false");
+        });
+      });
+
       document.querySelectorAll(".tab-button").forEach((button) => {
         button.addEventListener("click", () => activateTab(button.dataset.tab));
       });
