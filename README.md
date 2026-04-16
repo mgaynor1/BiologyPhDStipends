@@ -5,13 +5,11 @@
 
 [![DOI](https://zenodo.org/badge/573224262.svg)](https://zenodo.org/doi/10.5281/zenodo.12775211)
 
-This repository contains the underlying code for the **BiologyPhDStipends** Shiny application hosted at [rhettrautsaw.app/shiny/BiologyPhDStipends/](https://rhettrautsaw.app/shiny/BiologyPhDStipends/).   
+This repository contains the underlying code for the **BiologyPhDStipends** hosted at [https://mlgaynor.com/BiologyPhDStipends/](https://mlgaynor.com/BiologyPhDStipends/).   
 
 ## Background 
 
 In April 2022, I started to collect US-based Biology Ph.D. Stipends. Originally, my goal was to advocate for a living-wage for graduate students in the Department of Biology at the University of Florida. After feedback from others, Rhett and I decided to build this Shiny App. We hope this dataset will help others advocate for a living wage. This is our cleaned repository, many iterates of the Shiny app have existed and 146 prior commits. 
-
-Shiny apps are expensive to host, if you find this resource useful, please consider [donating here](https://givebutter.com/C2gRUO) to help us keep this resource alive! 
 
 
 # More Plots
