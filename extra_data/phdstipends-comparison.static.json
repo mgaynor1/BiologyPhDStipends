@@ -1,6 +1,11 @@
 {
-  "updated_at": "2026-04-01T10:17:31.452110+00:00",
+  "updated_at": "2026-05-01T10:45:56.592315+00:00",
   "rows": [
+    {
+      "label": "Wright State University - Biological Sciences",
+      "mean": 9000.0,
+      "type": "positive"
+    },
     {
       "label": "University of North Texas - Biology",
       "mean": 8250.0,
@@ -33,7 +38,7 @@
     },
     {
       "label": "University of Illinois - Chicago - Biological Sciences",
-      "mean": 4664.959999999999,
+      "mean": 4651.626666666666,
       "type": "positive"
     },
     {
@@ -237,11 +242,6 @@
       "type": "negative"
     },
     {
-      "label": "University of Virginia - Biology",
-      "mean": -4500.0,
-      "type": "negative"
-    },
-    {
       "label": "Ohio State University - Plant Pathology",
       "mean": -5044.0,
       "type": "negative"
@@ -312,11 +312,6 @@
       "type": "negative"
     },
     {
-      "label": "University of Pennsylvania - Biology",
-      "mean": -7555.555555555556,
-      "type": "negative"
-    },
-    {
       "label": "Rice University - Ecology and Evolutionary Biology",
       "mean": -7750.0,
       "type": "negative"
@@ -339,6 +334,11 @@
     {
       "label": "Texas Christian University - Biology",
       "mean": -8500.0,
+      "type": "negative"
+    },
+    {
+      "label": "University of Virginia - Biology",
+      "mean": -8640.0,
       "type": "negative"
     },
     {
@@ -379,6 +379,11 @@
     {
       "label": "Dartmouth College - Molecular and Cellular Biology",
       "mean": -14466.666666666666,
+      "type": "negative"
+    },
+    {
+      "label": "University of Pennsylvania - Biology",
+      "mean": -16055.555555555555,
       "type": "negative"
     },
     {
