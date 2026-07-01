@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-01T15:33:23.777881+00:00",
+  "updated_at": "2026-07-01T12:17:30.665692+00:00",
   "rows": [
     {
       "label": "Wright State University - Biological Sciences",
@@ -79,11 +79,6 @@
     {
       "label": "New York University - Biology",
       "mean": 1347.3333333333333,
-      "type": "positive"
-    },
-    {
-      "label": "Case Western Reserve University - Biology",
-      "mean": 1300.0,
       "type": "positive"
     },
     {
@@ -224,6 +219,11 @@
     {
       "label": "University of Alabama - Biological Sciences",
       "mean": -3870.0,
+      "type": "negative"
+    },
+    {
+      "label": "Case Western Reserve University - Biology",
+      "mean": -3900.0,
       "type": "negative"
     },
     {
